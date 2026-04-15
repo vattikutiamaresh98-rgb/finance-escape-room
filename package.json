@@ -1,0 +1,13 @@
+{
+ "name": "finance-escape-room",
+ "version": "1.0.0",
+ "description": "Digital Finance Escape Room - Team-based puzzle game for SPS FP&A Onsite",
+ "main": "server.js",
+ "scripts": {
+   "start": "node server.js"
+ },
+ "dependencies": {
+   "express": "^4.18.2",
+   "socket.io": "^4.7.2"
+ }
+}
