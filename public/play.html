@@ -1,5 +1,5 @@
 
-Purpose: Print play.html for copying
+Purpose: Print updated play.html with auto-rejoin
 
 <!DOCTYPE html>
 <html lang="en">
@@ -322,12 +322,23 @@ Purpose: Print play.html for copying
     }
   };
 
+  // Auto-rejoin on refresh
+  const saved = sessionStorage.getItem('escapeRoom');
+  if (saved) {
+    const { name, team } = JSON.parse(saved);
+    teamName = team;
+    socket.emit('joinTeam', { teamName: team, playerName: name });
+    showScreen('waitScreen');
+    document.getElementById('waitTeamName').textContent = team;
+  }
+
   function joinGame() {
     const name = document.getElementById('playerName').value.trim();
     const team = document.getElementById('teamSelect').value;
     if (!name) { alert('Please enter your name!'); return; }
     if (!team) { alert('Please pick a team!'); return; }
     teamName = team;
+    sessionStorage.setItem('escapeRoom', JSON.stringify({ name, team }));
     socket.emit('joinTeam', { teamName: team, playerName: name });
     showScreen('waitScreen');
     document.getElementById('waitTeamName').textContent = team;
@@ -367,7 +378,7 @@ Purpose: Print play.html for copying
     hintText.classList.add('visible');
   });
 
-  socket.on('gameReset', () => { currentPuzzle = 1; teamName = ''; showScreen('joinScreen'); });
+  socket.on('gameReset', () => { currentPuzzle = 1; teamName = ''; sessionStorage.removeItem('escapeRoom'); showScreen('joinScreen'); });
 
   function renderPuzzle(num) {
     const puzzle = puzzles[num];
