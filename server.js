@@ -36,6 +36,11 @@ const puzzleHints = {
 };
 
 io.on('connection', (socket) => {
+ socket.emit('teamsUpdate', getTeamsForHost());
+ if (gameState.started) {
+   socket.emit('gameStarted', { startTime: gameState.startTime });
+ }
+
  socket.on('joinTeam', ({ teamName, playerName }) => {
    if (!gameState.teams[teamName]) {
      gameState.teams[teamName] = {
@@ -43,9 +48,16 @@ io.on('connection', (socket) => {
        solvedPuzzles: [], hintsUsed: 0, finished: false, finishTime: null
      };
    }
-   gameState.teams[teamName].players.push({ id: socket.id, name: playerName });
+   const team = gameState.teams[teamName];
+   const existing = team.players.find(p => p.name === playerName);
+   if (existing) {
+     existing.id = socket.id;
+   } else {
+     team.players.push({ id: socket.id, name: playerName });
+   }
    socket.join(teamName);
    socket.teamName = teamName;
+   socket.playerName = playerName;
    socket.emit('gameState', { started: gameState.started, team: gameState.teams[teamName] });
    io.emit('teamsUpdate', getTeamsForHost());
  });
@@ -102,12 +114,7 @@ io.on('connection', (socket) => {
  });
 
  socket.on('disconnect', () => {
-   if (socket.teamName && gameState.teams[socket.teamName]) {
-     const team = gameState.teams[socket.teamName];
-     team.players = team.players.filter(p => p.id !== socket.id);
-     if (team.players.length === 0) delete gameState.teams[socket.teamName];
-     io.emit('teamsUpdate', getTeamsForHost());
-   }
+   io.emit('teamsUpdate', getTeamsForHost());
  });
 });
 
