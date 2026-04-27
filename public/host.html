@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,241 +5,261 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🏦 Finance Escape Room — Host Screen</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
-  
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  
+
   body {
     font-family: 'Inter', sans-serif;
-    background: #0a0a1a;
+    background: #000;
     color: #fff;
-    min-height: 100vh;
+    height: 100vh;
     overflow: hidden;
   }
 
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: 
-      radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(0, 170, 255, 0.08) 0%, transparent 50%),
-      radial-gradient(circle at 50% 80%, rgba(255, 0, 128, 0.06) 0%, transparent 50%);
-    z-index: 0;
-    animation: bgPulse 8s ease-in-out infinite alternate;
+  /* Ambient background */
+  .bg {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 15%, rgba(0,170,255,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 15% 85%, rgba(255,0,128,0.06) 0%, transparent 50%);
+    animation: bgShift 12s ease-in-out infinite alternate;
   }
-
-  @keyframes bgPulse { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+  @keyframes bgShift { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
   .container {
-    position: relative; z-index: 1; padding: 20px 40px;
+    position: relative; z-index: 1;
     height: 100vh; display: flex; flex-direction: column;
+    padding: 25px 50px;
   }
 
-  .header { text-align: center; padding: 15px 0; position: relative; }
+  /* Header */
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
 
-  .header h1 {
-    font-family: 'Orbitron', monospace; font-size: 2.8em; font-weight: 900;
+  .header .brand {
+    display: flex; align-items: center; gap: 15px;
+  }
+
+  .header .brand h1 {
+    font-size: 1.6em; font-weight: 900;
     background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    letter-spacing: 3px; animation: titleGlow 3s ease-in-out infinite alternate;
+    background-size: 200% 200%; animation: grad 8s ease infinite;
+  }
+  @keyframes grad { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+  .header .brand .tag {
+    font-size: 0.7em; color: rgba(255,255,255,0.3);
+    letter-spacing: 3px; text-transform: uppercase;
   }
 
-  @keyframes titleGlow { 0% { filter: brightness(1); } 100% { filter: brightness(1.3); } }
-
-  .header .subtitle {
-    font-size: 1.1em; color: rgba(255,255,255,0.5); margin-top: 5px;
-    letter-spacing: 5px; text-transform: uppercase;
-  }
-
-  .timer-bar { display: flex; justify-content: center; align-items: center; gap: 15px; margin: 10px 0; }
+  .timer-area { display: flex; align-items: center; gap: 12px; }
 
   .timer {
-    font-family: 'Orbitron', monospace; font-size: 2.5em; font-weight: 700;
-    color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+    font-family: 'Inter', sans-serif; font-size: 2.2em; font-weight: 900;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
+  .timer.warning { background: linear-gradient(135deg, #ffaa00, #ff8800); -webkit-background-clip: text; }
+  .timer.danger { background: linear-gradient(135deg, #ff4444, #ff0000); -webkit-background-clip: text; animation: timerPulse 0.5s infinite; }
+  @keyframes timerPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-  .timer.warning { color: #ffaa00; text-shadow: 0 0 20px rgba(255, 170, 0, 0.5); }
-  .timer.danger { color: #ff4444; text-shadow: 0 0 20px rgba(255, 68, 68, 0.5); animation: timerPulse 0.5s infinite; }
-
-  @keyframes timerPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
+  /* Lobby */
   .lobby {
     flex: 1; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 30px;
+    align-items: center; justify-content: center; gap: 40px;
   }
 
-  .lobby .join-info {
-    text-align: center; padding: 30px 50px;
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px; backdrop-filter: blur(10px);
+  .lobby-header { text-align: center; }
+
+  .lobby-header h2 {
+    font-size: clamp(2.5em, 5vw, 4em); font-weight: 900;
+    color: rgba(255,255,255,0.08);
+    animation: fadeIn 1s ease;
   }
 
-  .lobby .join-info h2 { font-size: 1.8em; margin-bottom: 15px; color: #00aaff; }
-
-  .lobby .join-url {
-    font-family: 'Orbitron', monospace; font-size: 2em; color: #00ff88;
-    padding: 15px 30px; background: rgba(0, 255, 136, 0.1);
-    border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 12px; margin: 10px 0;
+  .lobby-header .counter {
+    font-size: 1.2em; color: rgba(255,255,255,0.4); margin-top: 10px;
+  }
+  .lobby-header .counter b {
+    font-size: 1.3em; font-weight: 900;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
 
-  .lobby .team-count { font-size: 1.3em; color: rgba(255,255,255,0.7); margin-top: 15px; }
-  .lobby .team-count span { color: #00ff88; font-weight: 700; font-size: 1.4em; }
-
-  .start-btn {
-    font-family: 'Orbitron', monospace; font-size: 1.5em; padding: 18px 60px;
-    background: linear-gradient(135deg, #00ff88, #00cc6a); color: #0a0a1a;
-    border: none; border-radius: 50px; cursor: pointer; font-weight: 700;
-    letter-spacing: 3px; text-transform: uppercase; transition: all 0.3s;
-    box-shadow: 0 0 30px rgba(0, 255, 136, 0.3);
+  .lobby-teams {
+    display: flex; flex-wrap: wrap; gap: 16px;
+    justify-content: center; max-width: 1000px;
   }
-
-  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 50px rgba(0, 255, 136, 0.5); }
-  .start-btn:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
-
-  .lobby-teams { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; max-width: 900px; }
 
   .lobby-team-card {
-    padding: 15px 25px; background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
-    text-align: center; min-width: 150px; animation: fadeInUp 0.5s ease;
+    padding: 20px 30px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px; text-align: center;
+    min-width: 170px; animation: fadeUp 0.5s ease;
+    transition: all 0.3s;
   }
+  .lobby-team-card:hover { border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); }
 
-  .lobby-team-card .team-name { font-weight: 700; font-size: 1.2em; margin-bottom: 5px; }
-  .lobby-team-card .player-count { color: rgba(255,255,255,0.5); font-size: 0.9em; }
+  .lobby-team-card .team-name { font-weight: 800; font-size: 1.1em; margin-bottom: 6px; }
+  .lobby-team-card .player-count { color: rgba(255,255,255,0.35); font-size: 0.85em; }
+  .lobby-team-card .player-names { color: rgba(255,255,255,0.2); font-size: 0.75em; margin-top: 4px; }
 
-  @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .start-btn {
+    font-size: 1.3em; padding: 20px 70px;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    color: #000; border: none; border-radius: 60px;
+    cursor: pointer; font-weight: 900; letter-spacing: 3px;
+    text-transform: uppercase; transition: all 0.4s;
+    box-shadow: 0 0 40px rgba(0,255,136,0.2);
+  }
+  .start-btn:hover { transform: scale(1.05); box-shadow: 0 0 60px rgba(0,255,136,0.35); }
+  .start-btn:disabled { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.2); box-shadow: none; cursor: not-allowed; }
 
-  .race-container { flex: 1; display: none; flex-direction: column; gap: 12px; padding: 10px 0; overflow-y: auto; }
+  /* Race */
+  .race-container { flex: 1; display: none; flex-direction: column; gap: 10px; padding: 15px 0; overflow-y: auto; }
   .race-container.active { display: flex; }
 
   .team-track {
-    display: flex; align-items: center; gap: 15px; padding: 12px 20px;
-    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px; transition: all 0.5s ease; position: relative; overflow: hidden;
+    display: flex; align-items: center; gap: 20px; padding: 16px 24px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 16px; transition: all 0.5s;
   }
+  .team-track.finished { border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.03); }
+  .team-track.first-place { border-color: rgba(255,215,0,0.4); background: rgba(255,215,0,0.05); box-shadow: 0 0 40px rgba(255,215,0,0.1); }
 
-  .team-track.finished { border-color: rgba(0, 255, 136, 0.4); background: rgba(0, 255, 136, 0.05); }
-  .team-track.first-place { border-color: rgba(255, 215, 0, 0.6); background: rgba(255, 215, 0, 0.08); box-shadow: 0 0 30px rgba(255, 215, 0, 0.15); }
+  .team-rank {
+    font-size: 2em; font-weight: 900; min-width: 55px; text-align: center;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .team-rank.gold { background: linear-gradient(135deg, #ffd700, #ffaa00); -webkit-background-clip: text; }
+  .team-rank.silver { background: linear-gradient(135deg, #c0c0c0, #999); -webkit-background-clip: text; }
+  .team-rank.bronze { background: linear-gradient(135deg, #cd7f32, #a0522d); -webkit-background-clip: text; }
 
-  .team-rank { font-family: 'Orbitron', monospace; font-size: 1.8em; font-weight: 900; min-width: 50px; text-align: center; }
-  .team-rank.gold { color: #ffd700; } .team-rank.silver { color: #c0c0c0; } .team-rank.bronze { color: #cd7f32; }
+  .team-info { min-width: 200px; }
+  .team-info .name { font-size: 1.2em; font-weight: 800; }
+  .team-info .players { font-size: 0.75em; color: rgba(255,255,255,0.3); margin-top: 3px; }
 
-  .team-info { min-width: 180px; }
-  .team-info .name { font-size: 1.3em; font-weight: 700; }
-  .team-info .players { font-size: 0.8em; color: rgba(255,255,255,0.4); margin-top: 2px; }
-
-  .progress-track { flex: 1; height: 40px; background: rgba(255,255,255,0.05); border-radius: 20px; position: relative; overflow: hidden; }
-
+  .progress-track { flex: 1; height: 36px; background: rgba(255,255,255,0.04); border-radius: 18px; overflow: hidden; }
   .progress-fill {
-    height: 100%; border-radius: 20px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative; display: flex; align-items: center; justify-content: flex-end;
-    padding-right: 15px; min-width: 40px;
+    height: 100%; border-radius: 18px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 12px; min-width: 36px;
   }
+  .progress-fill .runner { font-size: 1.3em; }
 
-  .progress-fill .runner { font-size: 1.5em; animation: bounce 0.6s infinite alternate; }
-  @keyframes bounce { from { transform: translateY(-2px); } to { transform: translateY(2px); } }
-
-  .puzzle-dots { display: flex; gap: 8px; align-items: center; }
-
+  .puzzle-dots { display: flex; gap: 6px; align-items: center; }
   .puzzle-dot {
-    width: 28px; height: 28px; border-radius: 50%; display: flex;
-    align-items: center; justify-content: center; font-size: 0.75em; font-weight: 700; transition: all 0.3s;
+    width: 26px; height: 26px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7em; font-weight: 700; transition: all 0.3s;
   }
+  .puzzle-dot.solved { background: #00ff88; color: #000; box-shadow: 0 0 8px rgba(0,255,136,0.4); }
+  .puzzle-dot.current { background: rgba(0,170,255,0.2); border: 2px solid #00aaff; color: #00aaff; animation: dotPulse 1s infinite; }
+  .puzzle-dot.locked { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); }
+  @keyframes dotPulse { 0%,100% { box-shadow: 0 0 4px rgba(0,170,255,0.2); } 50% { box-shadow: 0 0 12px rgba(0,170,255,0.5); } }
 
-  .puzzle-dot.solved { background: #00ff88; color: #0a0a1a; box-shadow: 0 0 10px rgba(0, 255, 136, 0.5); }
-  .puzzle-dot.current { background: rgba(0, 170, 255, 0.3); border: 2px solid #00aaff; color: #00aaff; animation: currentPulse 1s infinite; }
-  .puzzle-dot.locked { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); }
+  .team-stats { text-align: right; min-width: 130px; }
+  .team-stats .puzzle-status { font-size: 1em; font-weight: 700; }
+  .team-stats .time { font-size: 1.1em; font-weight: 900; background: linear-gradient(135deg, #00ff88, #00aaff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .team-stats .hints { font-size: 0.8em; color: rgba(255,255,255,0.3); margin-top: 2px; }
 
-  @keyframes currentPulse { 0%, 100% { box-shadow: 0 0 5px rgba(0, 170, 255, 0.3); } 50% { box-shadow: 0 0 15px rgba(0, 170, 255, 0.6); } }
-
-  .team-stats { text-align: right; min-width: 120px; }
-  .team-stats .hints { font-size: 0.85em; color: rgba(255,255,255,0.4); }
-  .team-stats .time { font-family: 'Orbitron', monospace; font-size: 1.1em; color: #00ff88; }
-
+  /* Winner */
   .winner-overlay {
-    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.85); z-index: 100; justify-content: center;
-    align-items: center; flex-direction: column; animation: fadeIn 0.5s;
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.9); z-index: 100;
+    justify-content: center; align-items: center; flex-direction: column;
   }
   .winner-overlay.active { display: flex; }
   .winner-overlay .trophy { font-size: 8em; animation: trophyBounce 1s ease infinite; }
-  @keyframes trophyBounce { 0%, 100% { transform: scale(1) rotate(-5deg); } 50% { transform: scale(1.1) rotate(5deg); } }
-  .winner-overlay h2 { font-family: 'Orbitron', monospace; font-size: 3em; margin: 20px 0; background: linear-gradient(135deg, #ffd700, #ffaa00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .winner-overlay .win-time { font-size: 1.5em; color: rgba(255,255,255,0.7); }
-  .winner-overlay .close-btn { margin-top: 30px; padding: 12px 40px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 30px; cursor: pointer; font-size: 1em; }
+  @keyframes trophyBounce { 0%,100% { transform: scale(1) rotate(-5deg); } 50% { transform: scale(1.1) rotate(5deg); } }
+  .winner-overlay h2 {
+    font-size: clamp(2em, 5vw, 4em); font-weight: 900; margin: 20px 0;
+    background: linear-gradient(135deg, #ffd700, #ffaa00);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .winner-overlay .win-time { font-size: 1.5em; color: rgba(255,255,255,0.6); }
+  .winner-overlay .close-btn {
+    margin-top: 30px; padding: 14px 50px;
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.15);
+    color: #fff; border-radius: 30px; cursor: pointer; font-size: 1em;
+    transition: all 0.3s;
+  }
+  .winner-overlay .close-btn:hover { background: rgba(255,255,255,0.1); }
 
-  .confetti-piece { position: fixed; width: 10px; height: 10px; z-index: 101; animation: confettiFall linear forwards; }
+  .confetti-piece { position: fixed; z-index: 101; animation: confettiFall linear forwards; }
   @keyframes confettiFall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
 
-  .controls { display: flex; justify-content: center; gap: 15px; padding: 10px 0; }
-  .ctrl-btn { padding: 10px 25px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); color: #fff; border-radius: 8px; cursor: pointer; font-size: 0.9em; transition: all 0.3s; }
-  .ctrl-btn:hover { background: rgba(255,255,255,0.1); }
-  .ctrl-btn.danger { border-color: rgba(255, 68, 68, 0.4); color: #ff4444; }
+  .controls { display: flex; justify-content: center; gap: 15px; padding: 12px 0; }
+  .ctrl-btn {
+    padding: 10px 28px; border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03); color: rgba(255,255,255,0.5);
+    border-radius: 10px; cursor: pointer; font-size: 0.85em; transition: all 0.3s;
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,0.06); color: #fff; }
+  .ctrl-btn.danger { border-color: rgba(255,68,68,0.2); color: rgba(255,68,68,0.6); }
+  .ctrl-btn.danger:hover { border-color: rgba(255,68,68,0.4); color: #ff4444; }
 
   .team-color-0 { --tc: #00ff88; } .team-color-1 { --tc: #00aaff; } .team-color-2 { --tc: #ff6b6b; }
   .team-color-3 { --tc: #ffd700; } .team-color-4 { --tc: #ff00ff; } .team-color-5 { --tc: #ff8800; }
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-  .particle { position: fixed; width: 4px; height: 4px; background: rgba(0, 255, 136, 0.3); border-radius: 50%; pointer-events: none; z-index: 0; animation: float 15s infinite linear; }
-  @keyframes float { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
-<div id="particles"></div>
+<div class="bg"></div>
 <div class="container">
   <div class="header">
-    <h1>🏦 FINANCE ESCAPE ROOM</h1>
-    <div class="subtitle">SPS FP&A Edition</div>
+    <div class="brand">
+      <h1>🏦 Finance Escape Room</h1>
+      <div class="tag">SPS FP&A Edition</div>
+    </div>
+    <div class="timer-area" id="timerBar" style="display:none;">
+      <div class="timer" id="timer">00:00</div>
+    </div>
   </div>
-  <div class="timer-bar" id="timerBar" style="display:none;">
-    <span style="font-size:1.2em;">⏱️</span>
-    <div class="timer" id="timer">00:00</div>
-  </div>
+
   <div class="lobby" id="lobby">
-    <div class="join-info">
-      <h2>📱 Waiting for Players</h2>
-      <div class="team-count">
-        <span id="teamCount">0</span> teams joined · <span id="playerCount">0</span> players ready
+    <div class="lobby-header">
+      <h2>Waiting for Players</h2>
+      <div class="counter">
+        <b id="teamCount">0</b> teams · <b id="playerCount">0</b> players
       </div>
     </div>
     <div class="lobby-teams" id="lobbyTeams"></div>
-    <button class="start-btn" id="startBtn" disabled onclick="startGame()">⚡ START ESCAPE ⚡</button>
+    <button class="start-btn" id="startBtn" disabled onclick="startGame()">Start Escape</button>
   </div>
+
   <div class="race-container" id="raceContainer">
     <div id="teamTracks"></div>
   </div>
+
   <div class="controls" id="controls" style="display:none;">
-    <button class="ctrl-btn danger" onclick="resetGame()">🔄 Reset Game</button>
+    <button class="ctrl-btn danger" onclick="resetGame()">Reset Game</button>
   </div>
 </div>
+
 <div class="winner-overlay" id="winnerOverlay">
   <div class="trophy">🏆</div>
   <h2 id="winnerName">Team Name</h2>
   <div class="win-time" id="winnerTime">Escaped in 0:00</div>
   <button class="close-btn" onclick="closeWinner()">Continue Watching</button>
 </div>
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io();
   let gameStarted = false;
   let startTime = null;
   let timerInterval = null;
-
-  // Join URL removed from display
-
-  const particlesDiv = document.getElementById('particles');
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDelay = Math.random() * 15 + 's';
-    p.style.animationDuration = (10 + Math.random() * 10) + 's';
-    const colors = ['rgba(0,255,136,0.3)', 'rgba(0,170,255,0.3)', 'rgba(255,0,128,0.2)'];
-    p.style.background = colors[Math.floor(Math.random() * colors.length)];
-    particlesDiv.appendChild(p);
-  }
 
   socket.on('teamsUpdate', (teams) => { updateLobby(teams); updateRaceTrack(teams); });
 
@@ -281,87 +299,85 @@
       card.className = `lobby-team-card team-color-${i % 6}`;
       card.style.borderColor = `var(--tc)`;
       card.innerHTML = `
-        <div class="team-name" style="color: var(--tc)">${escapeHtml(team.name)}</div>
+        <div class="team-name" style="color: var(--tc)">${esc(team.name)}</div>
         <div class="player-count">${team.playerCount} player${team.playerCount !== 1 ? 's' : ''}</div>
-        <div style="font-size:0.75em; color:rgba(255,255,255,0.3); margin-top:4px;">${team.players.map(p => escapeHtml(p)).join(', ')}</div>
+        <div class="player-names">${team.players.map(p => esc(p)).join(', ')}</div>
       `;
       container.appendChild(card);
     });
     document.getElementById('teamCount').textContent = teams.length;
     document.getElementById('playerCount').textContent = totalPlayers;
     document.getElementById('startBtn').disabled = teams.length < 2;
+    // Update lobby header
+    document.querySelector('.lobby-header h2').textContent = teams.length > 0 ? 'Teams Ready' : 'Waiting for Players';
   }
 
   function updateRaceTrack(teams) {
     if (!gameStarted) return;
     const container = document.getElementById('teamTracks');
     container.innerHTML = '';
-    teams.forEach((team, index) => {
+    const colors = ['#00ff88','#00aaff','#ff6b6b','#ffd700','#ff00ff','#ff8800'];
+    const emojis = ['🚀','⚡','🔥','💎','🌟','🎯'];
+    teams.forEach((team, i) => {
       const progress = (team.solvedCount / team.totalPuzzles) * 100;
-      const colors = ['#00ff88', '#00aaff', '#ff6b6b', '#ffd700', '#ff00ff', '#ff8800'];
-      const color = colors[index % colors.length];
-      const emojis = ['🚀', '⚡', '🔥', '💎', '🌟', '🎯'];
-      const emoji = emojis[index % emojis.length];
+      const color = colors[i % 6];
+      const emoji = emojis[i % 6];
       let rankClass = '';
-      if (index === 0) rankClass = 'gold'; else if (index === 1) rankClass = 'silver'; else if (index === 2) rankClass = 'bronze';
+      if (i === 0) rankClass = 'gold'; else if (i === 1) rankClass = 'silver'; else if (i === 2) rankClass = 'bronze';
       const track = document.createElement('div');
-      track.className = `team-track ${team.finished ? 'finished' : ''} ${index === 0 && team.finished ? 'first-place' : ''}`;
-      let dotsHtml = '';
+      track.className = `team-track ${team.finished ? 'finished' : ''} ${i === 0 && team.finished ? 'first-place' : ''}`;
+      let dots = '';
       for (let p = 1; p <= team.totalPuzzles; p++) {
-        let dotClass = 'locked';
-        if (team.solvedCount >= p) dotClass = 'solved'; else if (team.currentPuzzle === p) dotClass = 'current';
-        dotsHtml += `<div class="puzzle-dot ${dotClass}">${team.solvedCount >= p ? '✓' : p}</div>`;
+        let dc = 'locked';
+        if (team.solvedCount >= p) dc = 'solved'; else if (team.currentPuzzle === p) dc = 'current';
+        dots += `<div class="puzzle-dot ${dc}">${team.solvedCount >= p ? '✓' : p}</div>`;
       }
       track.innerHTML = `
-        <div class="team-rank ${rankClass}">#${index + 1}</div>
+        <div class="team-rank ${rankClass}">#${i+1}</div>
         <div class="team-info">
-          <div class="name" style="color:${color}">${escapeHtml(team.name)}</div>
-          <div class="players">${team.players.map(p => escapeHtml(p)).join(', ')}</div>
+          <div class="name" style="color:${color}">${esc(team.name)}</div>
+          <div class="players">${team.players.map(p => esc(p)).join(', ')}</div>
         </div>
-        <div style="flex:1; display:flex; flex-direction:column; gap:8px;">
+        <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
           <div class="progress-track">
-            <div class="progress-fill" style="width:${Math.max(5, progress)}%; background: linear-gradient(90deg, ${color}44, ${color});">
+            <div class="progress-fill" style="width:${Math.max(5,progress)}%;background:linear-gradient(90deg,${color}33,${color});">
               <span class="runner">${team.finished ? '🏆' : emoji}</span>
             </div>
           </div>
-          <div class="puzzle-dots">${dotsHtml}</div>
+          <div class="puzzle-dots">${dots}</div>
         </div>
         <div class="team-stats">
-          ${team.finished ? `<div class="time">${formatTime(team.finishTime)}</div>` : `<div style="color:${color}; font-size:1.1em;">Puzzle ${team.currentPuzzle}/${team.totalPuzzles}</div>`}
+          ${team.finished
+            ? `<div class="time">${fmt(team.finishTime)}</div>`
+            : `<div class="puzzle-status" style="color:${color}">Puzzle ${team.currentPuzzle}/${team.totalPuzzles}</div>`}
           <div class="hints">${team.hintsUsed > 0 ? `💡 ${team.hintsUsed} hints` : ''}</div>
-        </div>
-      `;
+        </div>`;
       container.appendChild(track);
     });
   }
 
   function startTimer() {
-    const timerEl = document.getElementById('timer');
+    const el = document.getElementById('timer');
     timerInterval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      timerEl.textContent = formatTime(elapsed);
-      const seconds = elapsed / 1000;
-      timerEl.className = 'timer';
-      if (seconds > 600) timerEl.classList.add('danger'); else if (seconds > 300) timerEl.classList.add('warning');
+      const ms = Date.now() - startTime;
+      el.textContent = fmt(ms);
+      el.className = 'timer';
+      if (ms/1000 > 600) el.classList.add('danger');
+      else if (ms/1000 > 300) el.classList.add('warning');
     }, 100);
   }
 
-  function formatTime(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  function fmt(ms) {
+    const s = Math.floor(ms/1000), m = Math.floor(s/60);
+    return `${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
   }
 
   function startGame() { socket.emit('startGame'); }
+  function resetGame() { if (confirm('Reset game? All progress will be lost.')) socket.emit('resetGame'); }
 
-  function resetGame() {
-    if (confirm('Are you sure you want to reset the game? All progress will be lost!')) socket.emit('resetGame');
-  }
-
-  function showWinner(teamName, time) {
-    document.getElementById('winnerName').textContent = `🎉 ${teamName} ESCAPED! 🎉`;
-    document.getElementById('winnerTime').textContent = `Escaped in ${formatTime(time)}`;
+  function showWinner(name, time) {
+    document.getElementById('winnerName').textContent = `${name} ESCAPED!`;
+    document.getElementById('winnerTime').textContent = `Escaped in ${fmt(time)}`;
     document.getElementById('winnerOverlay').classList.add('active');
     launchConfetti();
   }
@@ -369,24 +385,19 @@
   function closeWinner() { document.getElementById('winnerOverlay').classList.remove('active'); }
 
   function launchConfetti() {
-    const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffd700', '#ff6b6b'];
-    for (let i = 0; i < 100; i++) {
+    const c = ['#00ff88','#00aaff','#ff0080','#ffd700','#ff6b6b','#ff00ff'];
+    for (let i = 0; i < 120; i++) {
       setTimeout(() => {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti-piece';
-        confetti.style.left = Math.random() * 100 + '%';
-        confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-        confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
-        confetti.style.width = (5 + Math.random() * 10) + 'px';
-        confetti.style.height = (5 + Math.random() * 10) + 'px';
-        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 5000);
-      }, i * 30);
+        const el = document.createElement('div');
+        el.className = 'confetti-piece';
+        el.style.cssText = `left:${Math.random()*100}%;width:${4+Math.random()*8}px;height:${4+Math.random()*8}px;background:${c[Math.floor(Math.random()*c.length)]};border-radius:${Math.random()>0.5?'50%':'2px'};animation-duration:${2+Math.random()*3}s;`;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 5000);
+      }, i * 25);
     }
   }
 
-  function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
+  function esc(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
 </script>
 </body>
 </html>
