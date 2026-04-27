@@ -5,205 +5,298 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Finance Escape Room — How We Built It</title>
 <style>
- @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
- * { margin: 0; padding: 0; box-sizing: border-box; }
- html { scroll-behavior: smooth; }
- body { font-family: 'Inter', sans-serif; background: #0a0a1a; color: #fff; overflow-x: hidden; }
- .hero { height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
- .hero::before { content: ''; position: absolute; width: 600px; height: 600px; background: radial-gradient(circle, rgba(0,255,136,0.15), transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: heroGlow 6s ease-in-out infinite alternate; }
- @keyframes heroGlow { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; } 100% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; } }
- .hero-badge { display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 30px; background: rgba(0,255,136,0.08); border: 1px solid rgba(0,255,136,0.2); font-size: 0.8em; color: #00ff88; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 25px; z-index: 1; opacity: 0; transform: translateY(20px); animation: revealUp 0.8s ease 0.3s forwards; }
- .hero-emoji { font-size: 5em; z-index: 1; margin-bottom: 15px; opacity: 0; transform: scale(0.5); animation: revealScale 0.8s ease 0.1s forwards; }
- .hero h1 { font-size: 4.5em; font-weight: 900; z-index: 1; background: linear-gradient(135deg, #00ff88 0%, #00aaff 50%, #ff0080 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% 200%; animation: revealUp 0.8s ease 0.5s forwards, gradientShift 8s ease infinite; opacity: 0; transform: translateY(30px); text-align: center; line-height: 1.1; }
- @keyframes gradientShift { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
- .hero-sub { font-size: 1.2em; color: rgba(255,255,255,0.4); z-index: 1; margin-top: 12px; letter-spacing: 3px; font-weight: 300; opacity: 0; transform: translateY(20px); animation: revealUp 0.8s ease 0.7s forwards; }
- .scroll-hint { position: absolute; bottom: 40px; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: revealUp 0.8s ease 1.2s forwards; }
- .scroll-hint span { font-size: 0.7em; color: rgba(255,255,255,0.3); letter-spacing: 3px; text-transform: uppercase; }
- .scroll-arrow { width: 24px; height: 24px; border-right: 2px solid rgba(255,255,255,0.3); border-bottom: 2px solid rgba(255,255,255,0.3); transform: rotate(45deg); animation: scrollBounce 2s ease-in-out infinite; }
- @keyframes scrollBounce { 0%, 100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(8px); } }
- .section { min-height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; padding: 80px 60px; }
- .section-inner { max-width: 900px; width: 100%; opacity: 0; transform: translateY(60px); transition: all 1s cubic-bezier(0.16, 1, 0.3, 1); }
- .section-inner.visible { opacity: 1; transform: translateY(0); }
- .desc-section { text-align: center; }
- .desc-section .big-text { font-size: 2.2em; font-weight: 700; line-height: 1.5; color: rgba(255,255,255,0.15); }
- .desc-section .big-text .reveal { color: rgba(255,255,255,0.15); transition: color 0.6s ease; }
- .desc-section.in-view .big-text .reveal { color: #fff; }
- .desc-section.in-view .big-text .hl { color: #00ff88; }
- .desc-section.in-view .big-text .hl2 { color: #00aaff; }
- .steps-container { min-height: 400vh; position: relative; }
- .steps-sticky { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
- .step-card { position: absolute; width: 500px; max-width: 85vw; padding: 50px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; text-align: center; opacity: 0; transform: translateY(80px) scale(0.9); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); backdrop-filter: blur(20px); }
- .step-card.active { opacity: 1; transform: translateY(0) scale(1); }
- .step-card.passed { opacity: 0; transform: translateY(-80px) scale(0.9); }
- .step-card .s-num { width: 50px; height: 50px; background: linear-gradient(135deg, #00ff88, #00aaff); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.2em; color: #0a0a1a; margin: 0 auto 20px; box-shadow: 0 8px 30px rgba(0,255,136,0.3); }
- .step-card .s-icon { font-size: 3em; margin-bottom: 20px; }
- .step-card .s-title { font-size: 1.5em; font-weight: 800; margin-bottom: 10px; color: #fff; }
- .step-card .s-desc { font-size: 1em; color: rgba(255,255,255,0.6); line-height: 1.6; margin-bottom: 15px; }
- .step-card .s-tool { display: inline-block; padding: 6px 18px; background: rgba(0,170,255,0.1); border: 1px solid rgba(0,170,255,0.2); border-radius: 20px; font-size: 0.85em; color: #00aaff; font-weight: 600; }
- .step-progress { position: fixed; right: 40px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 10; opacity: 0; transition: opacity 0.5s; }
- .step-progress.visible { opacity: 1; }
- .step-pip { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all 0.4s; }
- .step-pip.active { background: #00ff88; box-shadow: 0 0 12px rgba(0,255,136,0.5); transform: scale(1.3); }
- .stats-section { display: flex; gap: 30px; justify-content: center; flex-wrap: wrap; }
- .stat-card { padding: 40px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 20px; text-align: center; min-width: 200px; opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
- .stat-card.visible { opacity: 1; transform: translateY(0); }
- .stat-card:nth-child(2) { transition-delay: 0.15s; }
- .stat-card:nth-child(3) { transition-delay: 0.3s; }
- .stat-card .sc-icon { font-size: 2.5em; margin-bottom: 15px; }
- .stat-card .sc-value { font-size: 2.5em; font-weight: 900; background: linear-gradient(135deg, #00ff88, #00aaff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
- .stat-card .sc-label { font-size: 0.85em; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 2px; }
- .takeaway-section { text-align: center; }
- .takeaway-section .ta-text { font-size: 2em; font-weight: 700; line-height: 1.5; max-width: 700px; margin: 0 auto; }
- .takeaway-section .ta-text .g { background: linear-gradient(135deg, #00ff88, #00aaff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
- .takeaway-section .ta-sub { font-size: 1em; color: rgba(255,255,255,0.4); margin-top: 20px; line-height: 1.7; }
- .takeaway-section .ta-sub em { color: #00aaff; font-style: normal; font-weight: 600; }
- .demo-section { text-align: center; padding-bottom: 100px; }
- .demo-section h2 { font-size: 1.8em; font-weight: 800; margin-bottom: 30px; }
- .demo-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
- .demo-link { display: inline-flex; align-items: center; gap: 10px; padding: 16px 32px; border-radius: 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; font-size: 1em; font-weight: 600; text-decoration: none; transition: all 0.4s; }
- .demo-link:hover { background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,255,136,0.15); }
- .demo-link .dl-icon { font-size: 1.4em; }
- .footer { text-align: center; padding: 40px; border-top: 1px solid rgba(255,255,255,0.05); }
- .footer p { font-size: 0.75em; color: rgba(255,255,255,0.2); letter-spacing: 4px; text-transform: uppercase; }
- @keyframes revealUp { to { opacity: 1; transform: translateY(0); } }
- @keyframes revealScale { to { opacity: 1; transform: scale(1); } }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
+
+  /* ===== FULL-BLEED PANELS ===== */
+  .panel {
+    height: 100vh; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+
+  /* ===== HERO ===== */
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(0,170,255,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,0,128,0.08) 0%, transparent 50%);
+    animation: heroBg 10s ease-in-out infinite alternate;
+  }
+  @keyframes heroBg { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
+
+  .hero-content {
+    position: relative; z-index: 1; text-align: center;
+    max-width: 900px; padding: 0 40px;
+  }
+
+  .hero-content .badge {
+    display: inline-block; padding: 10px 24px; border-radius: 30px;
+    background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.25);
+    font-size: 0.9em; color: #00ff88; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px;
+    opacity: 0; animation: fadeUp 1s ease 0.2s forwards;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(3em, 8vw, 7em); font-weight: 900; line-height: 1;
+    background: linear-gradient(135deg, #00ff88 0%, #00aaff 40%, #ff0080 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-size: 200% 200%; animation: fadeUp 1s ease 0.4s forwards, grad 8s ease infinite;
+    opacity: 0;
+  }
+  @keyframes grad { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+
+  .hero-content .tagline {
+    font-size: clamp(1.1em, 2.5vw, 1.6em); color: rgba(255,255,255,0.5);
+    margin-top: 20px; font-weight: 300; line-height: 1.6;
+    opacity: 0; animation: fadeUp 1s ease 0.6s forwards;
+  }
+
+  .hero-content .tagline strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+
+  .scroll-cue {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    opacity: 0; animation: fadeUp 1s ease 1s forwards;
+  }
+  .scroll-cue span { font-size: 0.65em; color: rgba(255,255,255,0.25); letter-spacing: 4px; text-transform: uppercase; }
+  .scroll-cue .arrow { width: 20px; height: 20px; border-right: 2px solid rgba(255,255,255,0.25); border-bottom: 2px solid rgba(255,255,255,0.25); transform: rotate(45deg); animation: bounce 2s infinite; }
+  @keyframes bounce { 0%,100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(6px); } }
+
+  /* ===== PROCESS PANEL ===== */
+  .process-panel { background: #050510; flex-direction: column; padding: 60px 40px; gap: 50px; }
+
+  .process-panel h2 {
+    font-size: clamp(2em, 4vw, 3.5em); font-weight: 900; text-align: center;
+    opacity: 0; transform: translateY(40px);
+  }
+  .process-panel h2 .thin { font-weight: 300; color: rgba(255,255,255,0.4); }
+
+  .steps-row {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 0; width: 100%; max-width: 1200px;
+    opacity: 0; transform: translateY(40px);
+  }
+
+  .step-item {
+    padding: 40px 30px; text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    position: relative; transition: background 0.4s;
+  }
+  .step-item:last-child { border-right: none; }
+  .step-item:hover { background: rgba(255,255,255,0.03); }
+
+  .step-item .num {
+    font-size: 3.5em; font-weight: 900;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1; margin-bottom: 15px;
+  }
+
+  .step-item .icon { font-size: 2.5em; margin-bottom: 15px; }
+  .step-item .title { font-size: 1.15em; font-weight: 700; margin-bottom: 8px; }
+  .step-item .desc { font-size: 0.85em; color: rgba(255,255,255,0.45); line-height: 1.5; margin-bottom: 12px; }
+
+  .step-item .tool-tag {
+    display: inline-block; padding: 5px 14px; border-radius: 20px;
+    background: rgba(0,170,255,0.08); border: 1px solid rgba(0,170,255,0.15);
+    font-size: 0.75em; color: #00aaff; font-weight: 600;
+  }
+
+  /* ===== STATS PANEL ===== */
+  .stats-panel {
+    background: linear-gradient(180deg, #050510 0%, #0a0a1a 100%);
+    flex-direction: column; gap: 50px; padding: 60px 40px;
+  }
+
+  .stats-row {
+    display: flex; gap: 0; width: 100%; max-width: 900px;
+    opacity: 0; transform: translateY(40px);
+  }
+
+  .stat-item {
+    flex: 1; text-align: center; padding: 40px 20px;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-item .val {
+    font-size: clamp(3em, 6vw, 5em); font-weight: 900;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+
+  .stat-item .label {
+    font-size: 0.85em; color: rgba(255,255,255,0.35);
+    text-transform: uppercase; letter-spacing: 3px; margin-top: 10px;
+  }
+
+  .takeaway-text {
+    text-align: center; max-width: 700px;
+    opacity: 0; transform: translateY(40px);
+  }
+
+  .takeaway-text h3 {
+    font-size: clamp(1.5em, 3vw, 2.5em); font-weight: 700; line-height: 1.4;
+  }
+
+  .takeaway-text h3 .g {
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .takeaway-text p {
+    font-size: 1em; color: rgba(255,255,255,0.4); margin-top: 15px; line-height: 1.7;
+  }
+  .takeaway-text p em { color: #00aaff; font-style: normal; font-weight: 600; }
+
+  /* ===== CTA PANEL ===== */
+  .cta-panel {
+    background: #0a0a1a; flex-direction: column; gap: 40px;
+  }
+
+  .cta-panel h2 {
+    font-size: clamp(2em, 4vw, 3em); font-weight: 900;
+    opacity: 0; transform: translateY(30px);
+  }
+
+  .cta-links {
+    display: flex; gap: 20px;
+    opacity: 0; transform: translateY(30px);
+  }
+
+  .cta-link {
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px 40px; border-radius: 16px;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    color: #fff; font-size: 1.1em; font-weight: 700;
+    text-decoration: none; transition: all 0.4s;
+  }
+
+  .cta-link:hover {
+    background: rgba(0,255,136,0.08); border-color: rgba(0,255,136,0.3);
+    transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,255,136,0.12);
+  }
+
+  .cta-link .ico { font-size: 1.5em; }
+
+  .footer-line {
+    position: absolute; bottom: 30px;
+    font-size: 0.7em; color: rgba(255,255,255,0.15);
+    letter-spacing: 4px; text-transform: uppercase;
+  }
+
+  @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
-<section class="hero">
- <div class="hero-badge">🤖 Built with AI in ~1 Hour</div>
- <div class="hero-emoji">🏦</div>
- <h1>Finance<br>Escape Room</h1>
- <div class="hero-sub">SPS FP&A Edition</div>
- <div class="scroll-hint">
-   <span>Scroll to explore</span>
-   <div class="scroll-arrow"></div>
- </div>
+
+<!-- HERO -->
+<section class="panel">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="badge">🤖 Built with AI · Zero Code · One Hour</div>
+    <h1>Finance<br>Escape Room</h1>
+    <div class="tagline">
+      <strong>Teams race to solve finance puzzles on their phones</strong><br>
+      while a live leaderboard lights up the big screen.
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="arrow"></div>
+  </div>
 </section>
-<section class="section">
- <div class="section-inner desc-section" id="descSection">
-   <div class="big-text">
-     <span class="reveal">A </span>
-     <span class="reveal hl">multiplayer team game</span>
-     <span class="reveal"> where players solve </span>
-     <span class="reveal hl2">finance-themed puzzles</span>
-     <span class="reveal"> on their phones while a </span>
-     <span class="reveal hl">live leaderboard</span>
-     <span class="reveal"> tracks the race on the big screen.</span>
-   </div>
- </div>
+
+<!-- PROCESS -->
+<section class="panel process-panel">
+  <h2 class="reveal"><span class="thin">How we</span> built it</h2>
+  <div class="steps-row reveal">
+    <div class="step-item">
+      <div class="num">01</div>
+      <div class="icon">💬</div>
+      <div class="title">Describe</div>
+      <div class="desc">Explained the game concept in plain English to an AI assistant.</div>
+      <div class="tool-tag">Kiro · AgentSpaces</div>
+    </div>
+    <div class="step-item">
+      <div class="num">02</div>
+      <div class="icon">🤖</div>
+      <div class="title">Generate</div>
+      <div class="desc">AI built the complete working game through conversation.</div>
+      <div class="tool-tag">Kiro · AI Assistant</div>
+    </div>
+    <div class="step-item">
+      <div class="num">03</div>
+      <div class="icon">📦</div>
+      <div class="title">Store</div>
+      <div class="desc">Code pushed to a repository — version controlled and shareable.</div>
+      <div class="tool-tag">GitHub</div>
+    </div>
+    <div class="step-item">
+      <div class="num">04</div>
+      <div class="icon">🚀</div>
+      <div class="title">Deploy</div>
+      <div class="desc">One click to go live — accessible to anyone, on any device.</div>
+      <div class="tool-tag">Render</div>
+    </div>
+  </div>
 </section>
-<div class="steps-container" id="stepsContainer">
- <div class="steps-sticky">
-   <div class="step-card" data-step="0">
-     <div class="s-num">1</div>
-     <div class="s-icon">💬</div>
-     <div class="s-title">Describe the Idea</div>
-     <div class="s-desc">Explained the game concept in plain English — teams, puzzles, leaderboard, mobile-friendly.</div>
-     <div class="s-tool">Kiro · AgentSpaces</div>
-   </div>
-   <div class="step-card" data-step="1">
-     <div class="s-num">2</div>
-     <div class="s-icon">🤖</div>
-     <div class="s-title">AI Builds the Game</div>
-     <div class="s-desc">Through back-and-forth conversation, AI generated the complete working game — server, host screen, player screen.</div>
-     <div class="s-tool">Kiro · AI Assistant</div>
-   </div>
-   <div class="step-card" data-step="2">
-     <div class="s-num">3</div>
-     <div class="s-icon">📦</div>
-     <div class="s-title">Store the Code</div>
-     <div class="s-desc">Pushed the generated code to a repository — version controlled and ready to deploy.</div>
-     <div class="s-tool">GitHub</div>
-   </div>
-   <div class="step-card" data-step="3">
-     <div class="s-num">4</div>
-     <div class="s-icon">🚀</div>
-     <div class="s-title">Deploy Live</div>
-     <div class="s-desc">One click to deploy as a live website — accessible to anyone with the link, on any device.</div>
-     <div class="s-tool">Render · Free Hosting</div>
-   </div>
- </div>
-</div>
-<div class="step-progress" id="stepProgress">
- <div class="step-pip" data-pip="0"></div>
- <div class="step-pip" data-pip="1"></div>
- <div class="step-pip" data-pip="2"></div>
- <div class="step-pip" data-pip="3"></div>
-</div>
-<section class="section">
- <div class="section-inner stats-section" id="statsSection">
-   <div class="stat-card">
-     <div class="sc-icon">⏱️</div>
-     <div class="sc-value">~1hr</div>
-     <div class="sc-label">Time to Build</div>
-   </div>
-   <div class="stat-card">
-     <div class="sc-icon">💰</div>
-     <div class="sc-value">$0</div>
-     <div class="sc-label">Total Cost</div>
-   </div>
-   <div class="stat-card">
-     <div class="sc-icon">🧩</div>
-     <div class="sc-value">6</div>
-     <div class="sc-label">Finance Puzzles</div>
-   </div>
- </div>
+
+<!-- STATS + TAKEAWAY -->
+<section class="panel stats-panel">
+  <div class="stats-row reveal">
+    <div class="stat-item">
+      <div class="val">1hr</div>
+      <div class="label">Build Time</div>
+    </div>
+    <div class="stat-item">
+      <div class="val">$0</div>
+      <div class="label">Total Cost</div>
+    </div>
+    <div class="stat-item">
+      <div class="val">6</div>
+      <div class="label">Puzzles</div>
+    </div>
+    <div class="stat-item">
+      <div class="val">∞</div>
+      <div class="label">Fun</div>
+    </div>
+  </div>
+  <div class="takeaway-text reveal">
+    <h3><span class="g">No coding background needed.</span><br>Just describe what you want.</h3>
+    <p>AI tools like Kiro let anyone turn an idea into a working product through conversation. The same approach works for <em>dashboards</em>, <em>calculators</em>, <em>automation tools</em>, and more.</p>
+  </div>
 </section>
-<section class="section">
- <div class="section-inner takeaway-section" id="takeawaySection">
-   <div class="ta-text">
-     <span class="g">No coding background needed.</span><br>
-     Just describe what you want.
-   </div>
-   <div class="ta-sub">
-     AI tools like Kiro let anyone turn an idea into a working product through conversation.<br>
-     The same approach works for <em>dashboards</em>, <em>calculators</em>, <em>automation tools</em>, and more.
-   </div>
- </div>
+
+<!-- CTA -->
+<section class="panel cta-panel">
+  <h2 class="reveal">Try it live</h2>
+  <div class="cta-links reveal">
+    <a class="cta-link" href="https://finance-escape-room.onrender.com/host" target="_blank">
+      <span class="ico">🖥️</span> Host Screen
+    </a>
+    <a class="cta-link" href="https://finance-escape-room.onrender.com/play" target="_blank">
+      <span class="ico">📱</span> Player Screen
+    </a>
+  </div>
+  <div class="footer-line">Built with AI · Powered by Amazon AgentSpaces</div>
 </section>
-<section class="section">
- <div class="section-inner demo-section" id="demoSection">
-   <h2>Try It Live</h2>
-   <div class="demo-links">
-     <a class="demo-link" href="https://finance-escape-room.onrender.com/host" target="_blank">
-       <span class="dl-icon">🖥️</span> Host Screen
-     </a>
-     <a class="demo-link" href="https://finance-escape-room.onrender.com/play" target="_blank">
-       <span class="dl-icon">📱</span> Player Screen
-     </a>
-   </div>
- </div>
-</section>
-<div class="footer">
- <p>Built with AI · Powered by Amazon AgentSpaces</p>
-</div>
+
 <script>
- const observer = new IntersectionObserver((entries) => {
-   entries.forEach(entry => {
-     if (entry.isIntersecting) {
-       entry.target.classList.add('visible');
-       if (entry.target.classList.contains('desc-section')) entry.target.classList.add('in-view');
-       if (entry.target.classList.contains('stats-section')) entry.target.querySelectorAll('.stat-card').forEach(c => c.classList.add('visible'));
-     }
-   });
- }, { threshold: 0.3 });
- document.querySelectorAll('.section-inner').forEach(el => observer.observe(el));
- const stepsContainer = document.getElementById('stepsContainer');
- const stepCards = document.querySelectorAll('.step-card');
- const stepProgress = document.getElementById('stepProgress');
- const stepPips = document.querySelectorAll('.step-pip');
- window.addEventListener('scroll', () => {
-   const rect = stepsContainer.getBoundingClientRect();
-   const containerHeight = stepsContainer.offsetHeight;
-   const scrolled = -rect.top;
-   const progress = Math.max(0, Math.min(1, scrolled / (containerHeight - window.innerHeight)));
-   if (rect.top < window.innerHeight && rect.bottom > 0) { stepProgress.classList.add('visible'); } else { stepProgress.classList.remove('visible'); }
-   const totalSteps = stepCards.length;
-   const currentStep = Math.min(Math.floor(progress * totalSteps), totalSteps - 1);
-   stepCards.forEach((card, i) => { card.classList.remove('active', 'passed'); if (i === currentStep) card.classList.add('active'); else if (i < currentStep) card.classList.add('passed'); });
-   stepPips.forEach((pip, i) => { pip.classList.toggle('active', i === currentStep); });
- });
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
 </body>
 </html>
