@@ -1,33 +1,36 @@
+
+Purpose: Print full overview.html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Finance Escape Room — How I Built It</title>
+<title>SPS FP&A Escape Room — How I Built It</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
 
-  /* ===== FULL-BLEED PANELS ===== */
+  /* Consistent ambient bg across all pages */
+  .ambient-bg {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 15%, rgba(0,170,255,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 15% 85%, rgba(255,0,128,0.06) 0%, transparent 50%);
+    animation: bgShift 12s ease-in-out infinite alternate;
+  }
+  @keyframes bgShift { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
+
   .panel {
     height: 100vh; width: 100%;
     display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
+    position: relative; overflow: hidden; z-index: 1;
   }
 
-  /* ===== HERO ===== */
-  .hero-bg {
-    position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 50% at 80% 20%, rgba(0,170,255,0.12) 0%, transparent 50%),
-      radial-gradient(ellipse 50% 40% at 20% 80%, rgba(255,0,128,0.08) 0%, transparent 50%);
-    animation: heroBg 10s ease-in-out infinite alternate;
-  }
-  @keyframes heroBg { 0% { transform: scale(1); } 100% { transform: scale(1.15); } }
-
+  /* HERO */
   .hero-content {
     position: relative; z-index: 1; text-align: center;
     max-width: 900px; padding: 0 40px;
@@ -55,37 +58,35 @@
     margin-top: 20px; font-weight: 300; line-height: 1.6;
     opacity: 0; animation: fadeUp 1s ease 0.6s forwards;
   }
-
   .hero-content .tagline strong { color: rgba(255,255,255,0.9); font-weight: 600; }
 
   .scroll-cue {
     position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
     display: flex; flex-direction: column; align-items: center; gap: 6px;
-    opacity: 0; animation: fadeUp 1s ease 1s forwards;
+    opacity: 0; animation: fadeUp 1s ease 1s forwards; z-index: 1;
   }
   .scroll-cue span { font-size: 0.65em; color: rgba(255,255,255,0.25); letter-spacing: 4px; text-transform: uppercase; }
   .scroll-cue .arrow { width: 20px; height: 20px; border-right: 2px solid rgba(255,255,255,0.25); border-bottom: 2px solid rgba(255,255,255,0.25); transform: rotate(45deg); animation: bounce 2s infinite; }
   @keyframes bounce { 0%,100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(6px); } }
 
-  /* ===== PROCESS PANEL ===== */
-  .process-panel { background: #050510; flex-direction: column; padding: 60px 40px; gap: 50px; }
+  /* PROCESS */
+  .process-panel { flex-direction: column; padding: 60px 40px; gap: 50px; }
 
   .process-panel h2 {
     font-size: clamp(2em, 4vw, 3.5em); font-weight: 900; text-align: center;
-    opacity: 0; transform: translateY(40px);
+    color: rgba(255,255,255,0.7);
   }
   .process-panel h2 .thin { font-weight: 300; color: rgba(255,255,255,0.4); }
 
   .steps-row {
     display: grid; grid-template-columns: repeat(4, 1fr);
     gap: 0; width: 100%; max-width: 1200px;
-    opacity: 0; transform: translateY(40px);
   }
 
   .step-item {
     padding: 40px 30px; text-align: center;
     border-right: 1px solid rgba(255,255,255,0.06);
-    position: relative; transition: background 0.4s;
+    transition: background 0.4s;
   }
   .step-item:last-child { border-right: none; }
   .step-item:hover { background: rgba(255,255,255,0.03); }
@@ -96,27 +97,19 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     line-height: 1; margin-bottom: 15px;
   }
-
   .step-item .icon { font-size: 2.5em; margin-bottom: 15px; }
   .step-item .title { font-size: 1.15em; font-weight: 700; margin-bottom: 8px; }
   .step-item .desc { font-size: 0.85em; color: rgba(255,255,255,0.45); line-height: 1.5; margin-bottom: 12px; }
-
   .step-item .tool-tag {
     display: inline-block; padding: 5px 14px; border-radius: 20px;
     background: rgba(0,170,255,0.08); border: 1px solid rgba(0,170,255,0.15);
     font-size: 0.75em; color: #00aaff; font-weight: 600;
   }
 
-  /* ===== STATS PANEL ===== */
-  .stats-panel {
-    background: linear-gradient(180deg, #050510 0%, #0a0a1a 100%);
-    flex-direction: column; gap: 50px; padding: 60px 40px;
-  }
+  /* STATS */
+  .stats-panel { flex-direction: column; gap: 50px; padding: 60px 40px; }
 
-  .stats-row {
-    display: flex; gap: 0; width: 100%; max-width: 900px;
-    opacity: 0; transform: translateY(40px);
-  }
+  .stats-row { display: flex; gap: 0; width: 100%; max-width: 900px; }
 
   .stat-item {
     flex: 1; text-align: center; padding: 40px 20px;
@@ -130,45 +123,29 @@
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     line-height: 1;
   }
-
   .stat-item .label {
     font-size: 0.85em; color: rgba(255,255,255,0.35);
     text-transform: uppercase; letter-spacing: 3px; margin-top: 10px;
   }
 
-  .takeaway-text {
-    text-align: center; max-width: 700px;
-    opacity: 0; transform: translateY(40px);
-  }
-
-  .takeaway-text h3 {
-    font-size: clamp(1.5em, 3vw, 2.5em); font-weight: 700; line-height: 1.4;
-  }
-
+  .takeaway-text { text-align: center; max-width: 700px; }
+  .takeaway-text h3 { font-size: clamp(1.5em, 3vw, 2.5em); font-weight: 700; line-height: 1.4; }
   .takeaway-text h3 .g {
     background: linear-gradient(135deg, #00ff88, #00aaff);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
-
-  .takeaway-text p {
-    font-size: 1em; color: rgba(255,255,255,0.4); margin-top: 15px; line-height: 1.7;
-  }
+  .takeaway-text p { font-size: 1em; color: rgba(255,255,255,0.4); margin-top: 15px; line-height: 1.7; }
   .takeaway-text p em { color: #00aaff; font-style: normal; font-weight: 600; }
 
-  /* ===== CTA PANEL ===== */
-  .cta-panel {
-    background: #0a0a1a; flex-direction: column; gap: 40px;
-  }
+  /* CTA */
+  .cta-panel { flex-direction: column; gap: 40px; }
 
   .cta-panel h2 {
     font-size: clamp(2em, 4vw, 3em); font-weight: 900;
-    opacity: 0; transform: translateY(30px);
+    color: rgba(255,255,255,0.7);
   }
 
-  .cta-links {
-    display: flex; gap: 20px;
-    opacity: 0; transform: translateY(30px);
-  }
+  .cta-links { display: flex; gap: 20px; }
 
   .cta-link {
     display: flex; align-items: center; gap: 12px;
@@ -177,12 +154,10 @@
     color: #fff; font-size: 1.1em; font-weight: 700;
     text-decoration: none; transition: all 0.4s;
   }
-
   .cta-link:hover {
     background: rgba(0,255,136,0.08); border-color: rgba(0,255,136,0.3);
     transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,255,136,0.12);
   }
-
   .cta-link .ico { font-size: 1.5em; }
 
   .footer-line {
@@ -193,16 +168,14 @@
 
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
 
-  /* Scroll reveal */
   .reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 </style>
 </head>
 <body>
+<div class="ambient-bg"></div>
 
-<!-- HERO -->
 <section class="panel">
-  <div class="hero-bg"></div>
   <div class="hero-content">
     <div class="badge">🤖 Built with AI · Zero Code · One Hour</div>
     <h1>Finance<br>Escape Room</h1>
@@ -217,7 +190,6 @@
   </div>
 </section>
 
-<!-- PROCESS -->
 <section class="panel process-panel">
   <h2 class="reveal"><span class="thin">How I</span> built it</h2>
   <div class="steps-row reveal">
@@ -252,7 +224,6 @@
   </div>
 </section>
 
-<!-- STATS + TAKEAWAY -->
 <section class="panel stats-panel">
   <div class="stats-row reveal">
     <div class="stat-item">
@@ -278,7 +249,6 @@
   </div>
 </section>
 
-<!-- CTA -->
 <section class="panel cta-panel">
   <h2 class="reveal">Try it live</h2>
   <div class="cta-links reveal">
