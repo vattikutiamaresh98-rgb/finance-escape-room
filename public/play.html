@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,183 +5,220 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>🔓 Finance Escape Room — Play</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
-  
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  
+
   body {
     font-family: 'Inter', sans-serif;
-    background: #0a0a1a;
+    background: #000;
     color: #fff;
     min-height: 100vh;
     min-height: -webkit-fill-available;
   }
 
-  .screen { display: none; min-height: 100vh; padding: 20px; }
+  .screen { display: none; min-height: 100vh; padding: 24px; }
   .screen.active { display: flex; flex-direction: column; }
 
+  /* JOIN */
   #joinScreen {
-    align-items: center; justify-content: center; gap: 25px;
-    background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3a 100%);
+    align-items: center; justify-content: center; gap: 28px;
+    position: relative; overflow: hidden;
   }
 
-  .join-logo { font-size: 4em; animation: logoFloat 3s ease-in-out infinite; }
-  @keyframes logoFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  #joinScreen::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.1) 0%, transparent 60%);
+    animation: glow 8s ease-in-out infinite alternate;
+  }
+  @keyframes glow { 0% { transform: scale(1); } 100% { transform: scale(1.2); } }
 
+  .join-logo { font-size: 3.5em; z-index: 1; }
   .join-title {
-    font-family: 'Orbitron', monospace; font-size: 1.5em; font-weight: 900; text-align: center;
+    font-size: 1.8em; font-weight: 900; z-index: 1; text-align: center;
     background: linear-gradient(135deg, #00ff88, #00aaff);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
+  .join-sub { color: rgba(255,255,255,0.3); font-size: 0.85em; z-index: 1; letter-spacing: 2px; text-transform: uppercase; }
 
-  .join-form { width: 100%; max-width: 350px; display: flex; flex-direction: column; gap: 15px; }
+  .join-form { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; z-index: 1; }
   .input-group { display: flex; flex-direction: column; gap: 6px; }
-  .input-group label { font-size: 0.85em; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 2px; }
+  .input-group label { font-size: 0.75em; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
 
   .input-group input, .input-group select {
-    padding: 14px 18px; background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
-    color: #fff; font-size: 1.1em; font-family: 'Inter', sans-serif;
+    padding: 16px 20px; background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
+    color: #fff; font-size: 1.05em; font-family: 'Inter', sans-serif;
     outline: none; transition: all 0.3s;
   }
-
-  .input-group input:focus, .input-group select:focus { border-color: #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.2); }
-  .input-group select option { background: #1a1a3a; }
+  .input-group input:focus, .input-group select:focus { border-color: #00ff88; box-shadow: 0 0 20px rgba(0,255,136,0.15); }
+  .input-group select option { background: #111; }
 
   .join-btn {
-    padding: 16px; background: linear-gradient(135deg, #00ff88, #00cc6a);
-    color: #0a0a1a; border: none; border-radius: 12px; font-size: 1.2em;
-    font-weight: 700; font-family: 'Orbitron', monospace; cursor: pointer;
-    letter-spacing: 2px; transition: all 0.3s; margin-top: 10px;
+    padding: 18px; background: linear-gradient(135deg, #00ff88, #00aaff);
+    color: #000; border: none; border-radius: 14px; font-size: 1.1em;
+    font-weight: 900; cursor: pointer; letter-spacing: 2px;
+    text-transform: uppercase; transition: all 0.3s; margin-top: 8px;
   }
   .join-btn:active { transform: scale(0.97); }
 
+  /* WAIT */
   #waitScreen { align-items: center; justify-content: center; gap: 20px; text-align: center; }
-  .wait-icon { font-size: 4em; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
-  .wait-team { font-family: 'Orbitron', monospace; font-size: 1.3em; color: #00ff88; }
-  .wait-msg { color: rgba(255,255,255,0.5); font-size: 1.1em; }
+  .wait-icon { font-size: 3.5em; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: 0.7; } }
+  .wait-team { font-size: 1.2em; font-weight: 800; background: linear-gradient(135deg, #00ff88, #00aaff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .wait-msg { color: rgba(255,255,255,0.4); font-size: 1em; }
 
+  /* PUZZLE */
   #puzzleScreen { gap: 0; padding: 0; }
 
   .puzzle-header {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 20px; background: rgba(255,255,255,0.03);
-    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 14px 20px; background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
+  .puzzle-num { font-size: 0.85em; font-weight: 700; color: #00aaff; }
+  .puzzle-progress { display: flex; gap: 5px; }
+  .prog-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.08); transition: all 0.3s; }
+  .prog-dot.done { background: #00ff88; box-shadow: 0 0 6px rgba(0,255,136,0.4); }
+  .prog-dot.active { background: #00aaff; animation: dotP 1s infinite; }
+  @keyframes dotP { 0%,100% { box-shadow: 0 0 3px rgba(0,170,255,0.2); } 50% { box-shadow: 0 0 10px rgba(0,170,255,0.5); } }
 
-  .puzzle-num { font-family: 'Orbitron', monospace; font-size: 0.9em; color: #00aaff; }
-  .puzzle-progress { display: flex; gap: 6px; }
+  .puzzle-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
 
-  .prog-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.1); transition: all 0.3s; }
-  .prog-dot.done { background: #00ff88; box-shadow: 0 0 6px rgba(0,255,136,0.5); }
-  .prog-dot.active { background: #00aaff; animation: dotPulse 1s infinite; }
-  @keyframes dotPulse { 0%, 100% { box-shadow: 0 0 3px rgba(0,170,255,0.3); } 50% { box-shadow: 0 0 10px rgba(0,170,255,0.6); } }
-
-  .puzzle-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
-
-  .puzzle-title { font-family: 'Orbitron', monospace; font-size: 1.2em; color: #00ff88; display: flex; align-items: center; gap: 10px; }
+  .puzzle-title {
+    font-size: 1.15em; font-weight: 800;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: flex; align-items: center; gap: 10px;
+  }
 
   .puzzle-story {
-    color: rgba(255,255,255,0.7); line-height: 1.6; font-size: 0.95em; padding: 15px;
-    background: rgba(255,255,255,0.03); border-left: 3px solid #00aaff; border-radius: 0 8px 8px 0;
+    color: rgba(255,255,255,0.55); line-height: 1.6; font-size: 0.9em; padding: 14px;
+    background: rgba(255,255,255,0.02); border-left: 3px solid rgba(0,170,255,0.4); border-radius: 0 10px 10px 0;
   }
 
-  .puzzle-content { padding: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; }
+  .puzzle-content {
+    padding: 18px; background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
+  }
 
-  .data-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; margin: 10px 0; }
-  .data-table th { padding: 8px 12px; text-align: left; color: #00aaff; border-bottom: 1px solid rgba(0,170,255,0.3); font-weight: 600; }
-  .data-table td { padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .data-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.8em; margin: 8px 0; }
+  .data-table th { padding: 8px 10px; text-align: left; color: #00aaff; border-bottom: 1px solid rgba(0,170,255,0.2); font-weight: 600; }
+  .data-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); }
   .data-table .highlight { color: #ff6b6b; font-weight: 700; }
 
   .cipher-text {
-    font-family: 'JetBrains Mono', monospace; font-size: 1.3em; text-align: center;
-    padding: 20px; background: rgba(0,0,0,0.3); border-radius: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 1.2em; text-align: center;
+    padding: 18px; background: rgba(0,0,0,0.4); border-radius: 10px;
     letter-spacing: 4px; color: #ffd700; word-break: break-all;
   }
 
-  .word-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; }
-
+  .word-grid { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; padding: 8px; }
   .word-letter {
-    width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 1.1em; font-weight: 700;
+    width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 1em; font-weight: 700;
   }
 
   .scrambled {
-    font-family: 'JetBrains Mono', monospace; font-size: 2em; text-align: center;
-    letter-spacing: 8px; color: #ff6b6b; padding: 15px;
-    animation: scrambleShake 0.5s ease-in-out infinite alternate;
+    font-family: 'JetBrains Mono', monospace; font-size: 1.8em; text-align: center;
+    letter-spacing: 8px; color: #ff6b6b; padding: 12px;
+    animation: shake 0.5s ease-in-out infinite alternate;
   }
-  @keyframes scrambleShake { from { transform: rotate(-1deg); } to { transform: rotate(1deg); } }
+  @keyframes shake { from { transform: rotate(-1deg); } to { transform: rotate(1deg); } }
 
-  .pattern-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; max-width: 250px; margin: 10px auto; }
-  .pattern-num { padding: 15px; text-align: center; font-family: 'Orbitron', monospace; font-size: 1.3em; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; }
-  .pattern-num.mystery { background: rgba(255, 215, 0, 0.15); border-color: rgba(255, 215, 0, 0.4); color: #ffd700; font-weight: 700; }
+  .pattern-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 240px; margin: 8px auto; }
+  .pattern-num {
+    padding: 14px; text-align: center; font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2em; font-weight: 700;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+  }
+  .pattern-num.mystery { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.3); color: #ffd700; }
 
-  .answer-area { padding: 15px 20px; background: rgba(255,255,255,0.03); border-top: 1px solid rgba(255,255,255,0.08); }
+  .clue-box {
+    padding: 12px 14px; background: rgba(255,215,0,0.05);
+    border: 1px dashed rgba(255,215,0,0.2); border-radius: 10px;
+    color: #ffd700; font-size: 0.85em; font-style: italic; line-height: 1.5;
+  }
+
+  .math-display {
+    font-family: 'JetBrains Mono', monospace; font-size: 1em;
+    padding: 14px; background: rgba(0,0,0,0.3); border-radius: 10px; line-height: 2;
+  }
+
+  /* Answer */
+  .answer-area { padding: 16px 20px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.06); }
   .answer-row { display: flex; gap: 10px; }
 
   .answer-input {
-    flex: 1; padding: 14px 18px; background: rgba(255,255,255,0.08);
-    border: 2px solid rgba(255,255,255,0.15); border-radius: 12px;
-    color: #fff; font-size: 1.1em; font-family: 'JetBrains Mono', monospace;
+    flex: 1; padding: 16px 18px; background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1); border-radius: 14px;
+    color: #fff; font-size: 1.05em; font-family: 'JetBrains Mono', monospace;
     outline: none; transition: all 0.3s;
   }
-  .answer-input:focus { border-color: #00aaff; box-shadow: 0 0 15px rgba(0, 170, 255, 0.2); }
-  .answer-input.wrong { border-color: #ff4444; animation: shake 0.5s; box-shadow: 0 0 15px rgba(255, 68, 68, 0.3); }
-  .answer-input.correct { border-color: #00ff88; box-shadow: 0 0 15px rgba(0, 255, 136, 0.3); }
-
-  @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px); } 40% { transform: translateX(8px); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+  .answer-input:focus { border-color: #00aaff; box-shadow: 0 0 15px rgba(0,170,255,0.15); }
+  .answer-input.wrong { border-color: #ff4444; animation: inputShake 0.5s; }
+  .answer-input.correct { border-color: #00ff88; box-shadow: 0 0 15px rgba(0,255,136,0.2); }
+  @keyframes inputShake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
 
   .submit-btn {
-    padding: 14px 24px; background: linear-gradient(135deg, #00aaff, #0088cc);
-    color: #fff; border: none; border-radius: 12px; font-size: 1.1em;
-    font-weight: 700; cursor: pointer; transition: all 0.3s; white-space: nowrap;
+    padding: 16px 24px; background: linear-gradient(135deg, #00aaff, #0088cc);
+    color: #fff; border: none; border-radius: 14px; font-size: 1.05em;
+    font-weight: 800; cursor: pointer; transition: all 0.3s; white-space: nowrap;
   }
   .submit-btn:active { transform: scale(0.95); }
 
   .hint-btn {
-    display: block; margin-top: 10px; padding: 8px; background: none;
-    border: 1px solid rgba(255, 215, 0, 0.3); color: #ffd700; border-radius: 8px;
-    cursor: pointer; font-size: 0.85em; width: 100%; transition: all 0.3s;
+    display: block; margin-top: 10px; padding: 10px; background: none;
+    border: 1px solid rgba(255,215,0,0.15); color: rgba(255,215,0,0.6);
+    border-radius: 10px; cursor: pointer; font-size: 0.8em; width: 100%; transition: all 0.3s;
   }
-  .hint-btn:hover { background: rgba(255, 215, 0, 0.1); }
+  .hint-btn:active { background: rgba(255,215,0,0.08); }
 
   .hint-text {
     display: none; margin-top: 10px; padding: 12px;
-    background: rgba(255, 215, 0, 0.08); border: 1px solid rgba(255, 215, 0, 0.2);
-    border-radius: 8px; color: #ffd700; font-size: 0.9em; line-height: 1.5;
+    background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.12);
+    border-radius: 10px; color: #ffd700; font-size: 0.85em; line-height: 1.5;
   }
   .hint-text.visible { display: block; }
 
+  /* VICTORY */
   #victoryScreen {
     align-items: center; justify-content: center; gap: 20px; text-align: center;
-    background: linear-gradient(135deg, #0a0a1a 0%, #0a1a0a 100%);
+    position: relative; overflow: hidden;
   }
-  .victory-emoji { font-size: 5em; animation: victoryBounce 1s infinite; }
-  @keyframes victoryBounce { 0%, 100% { transform: scale(1) rotate(0deg); } 25% { transform: scale(1.1) rotate(-5deg); } 75% { transform: scale(1.1) rotate(5deg); } }
-  .victory-title { font-family: 'Orbitron', monospace; font-size: 2em; font-weight: 900; background: linear-gradient(135deg, #ffd700, #ff8800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .victory-time { font-family: 'Orbitron', monospace; font-size: 1.5em; color: #00ff88; }
-  .victory-msg { color: rgba(255,255,255,0.6); font-size: 1.1em; max-width: 300px; }
-
-  .clue-box { padding: 12px 16px; background: rgba(255, 215, 0, 0.08); border: 1px dashed rgba(255, 215, 0, 0.3); border-radius: 8px; color: #ffd700; font-size: 0.9em; font-style: italic; }
-  .math-display { font-family: 'JetBrains Mono', monospace; font-size: 1.1em; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; line-height: 2; }
+  #victoryScreen::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, rgba(0,255,136,0.12) 0%, transparent 60%);
+  }
+  .victory-emoji { font-size: 5em; z-index: 1; animation: vBounce 1s infinite; }
+  @keyframes vBounce { 0%,100% { transform: scale(1); } 25% { transform: scale(1.1) rotate(-5deg); } 75% { transform: scale(1.1) rotate(5deg); } }
+  .victory-title {
+    font-size: 2.2em; font-weight: 900; z-index: 1;
+    background: linear-gradient(135deg, #ffd700, #ff8800);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .victory-time {
+    font-size: 1.5em; font-weight: 900; z-index: 1;
+    background: linear-gradient(135deg, #00ff88, #00aaff);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .victory-msg { color: rgba(255,255,255,0.4); font-size: 1em; max-width: 300px; z-index: 1; line-height: 1.5; }
 </style>
 </head>
 <body>
 
 <div class="screen active" id="joinScreen">
   <div class="join-logo">🏦</div>
-  <div class="join-title">FINANCE ESCAPE ROOM</div>
-  <div style="color:rgba(255,255,255,0.4); text-align:center;">SPS FP&A Edition</div>
+  <div class="join-title">Finance Escape Room</div>
+  <div class="join-sub">SPS FP&A Edition</div>
   <div class="join-form">
     <div class="input-group">
       <label>Your Name</label>
       <input type="text" id="playerName" placeholder="Enter your name" autocomplete="off">
     </div>
     <div class="input-group">
-      <label>Team Name</label>
+      <label>Team</label>
       <select id="teamSelect">
         <option value="">— Pick a team —</option>
         <option value="💰 Budget Busters">💰 Budget Busters</option>
@@ -194,15 +229,14 @@
         <option value="💎 EBITDA Elite">💎 EBITDA Elite</option>
       </select>
     </div>
-    <button class="join-btn" onclick="joinGame()">🔓 JOIN GAME</button>
+    <button class="join-btn" onclick="joinGame()">Join Game</button>
   </div>
 </div>
 
 <div class="screen" id="waitScreen">
   <div class="wait-icon">⏳</div>
   <div class="wait-team" id="waitTeamName"></div>
-  <div class="wait-msg">Waiting for the host to start the game...</div>
-  <div style="color:rgba(255,255,255,0.3); font-size:0.9em;">Get your team together! 🤝</div>
+  <div class="wait-msg">Waiting for the host to start...</div>
 </div>
 
 <div class="screen" id="puzzleScreen">
@@ -213,10 +247,10 @@
   <div class="puzzle-body" id="puzzleBody"></div>
   <div class="answer-area">
     <div class="answer-row">
-      <input type="text" class="answer-input" id="answerInput" placeholder="Enter your answer..." autocomplete="off">
-      <button class="submit-btn" onclick="submitAnswer()">GO →</button>
+      <input type="text" class="answer-input" id="answerInput" placeholder="Your answer..." autocomplete="off">
+      <button class="submit-btn" onclick="submitAnswer()">GO</button>
     </div>
-    <button class="hint-btn" id="hintBtn" onclick="requestHint()">💡 Need a hint? (costs nothing, but your pride)</button>
+    <button class="hint-btn" onclick="requestHint()">💡 Need a hint?</button>
     <div class="hint-text" id="hintText"></div>
   </div>
 </div>
@@ -231,97 +265,35 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io();
-  let currentPuzzle = 1;
-  let teamName = '';
-  let totalPuzzles = 6;
+  let currentPuzzle = 1, teamName = '', totalPuzzles = 6;
 
   const puzzles = {
-    1: {
-      icon: '🔢', title: 'The Missing Variance',
-      story: 'The CFO\'s quarterly report has a critical number missing! The finance team needs to find the missing variance before the board meeting. Analyze the data below and find the pattern.',
-      content: `
-        <table class="data-table">
-          <tr><th>Department</th><th>Budget ($K)</th><th>Actual ($K)</th><th>Variance ($K)</th></tr>
-          <tr><td>Engineering</td><td>500</td><td>486</td><td>14</td></tr>
-          <tr><td>Marketing</td><td>300</td><td>272</td><td>28</td></tr>
-          <tr><td>Operations</td><td>200</td><td>158</td><td class="highlight">???</td></tr>
-          <tr><td>Sales</td><td>400</td><td>344</td><td>56</td></tr>
-          <tr><td>HR</td><td>150</td><td>80</td><td>70</td></tr>
-        </table>
-        <div class="clue-box">🔍 Clue: The variance isn't just Budget minus Actual. Look at ALL the variances — there's a hidden pattern in the sequence.</div>
-      `,
-      placeholder: 'Enter the missing number'
-    },
-    2: {
-      icon: '🔐', title: 'The Encrypted Memo',
-      story: 'You found a locked file on the CFO\'s computer! It contains an encrypted memo. The encryption key is a Caesar cipher — each letter has been shifted forward by 3 positions in the alphabet.',
-      content: `
-        <div class="cipher-text">GHSUHFLDWLRQ</div>
-        <div class="clue-box" style="margin-top:15px;">🔍 Clue: Caesar Cipher (shift of 3). A→X, B→Y, C→Z, D→A... Decode the word above. It's a key accounting concept — an expense that spreads the cost of an asset over time.</div>
-      `,
-      placeholder: 'Enter the decoded word'
-    },
-    3: {
-      icon: '📝', title: 'The CFO\'s Password',
-      story: 'The CFO\'s safe requires a password! You found a sticky note with these clues. The password is a single finance word.',
-      content: `
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="padding:10px 15px; background:rgba(0,255,136,0.08); border-radius:8px;">✅ 7 letters long</div>
-          <div style="padding:10px 15px; background:rgba(0,170,255,0.08); border-radius:8px;">✅ It's the TOP line of an Income Statement</div>
-          <div style="padding:10px 15px; background:rgba(255,215,0,0.08); border-radius:8px;">✅ Without this, there is no profit</div>
-          <div style="padding:10px 15px; background:rgba(255,0,128,0.08); border-radius:8px;">✅ Starts with 'R' and ends with 'E'</div>
-        </div>
-        <div class="clue-box" style="margin-top:15px;">🔍 It's what a company earns from selling goods or services — before any costs are subtracted.</div>
-      `,
-      placeholder: 'Enter the password'
-    },
-    4: {
-      icon: '🧮', title: 'The Budget Puzzle',
-      story: 'The annual budget allocation has been scrambled! You need to calculate the correct Q2 allocation to unlock the next clue.',
-      content: `
-        <div class="math-display">
-          📋 <strong>Annual Budget:</strong> $1,500,000<br><br>
-          Q1 Allocation: 30% → $450,000 ✅<br>
-          <span style="color:#ffd700;">Q2 Allocation: 25% → $??? </span>🔒<br>
-          Q3 Allocation: 25% → $375,000 ✅<br>
-          Q4 Allocation: 20% → $300,000 ✅<br>
-        </div>
-        <div class="clue-box" style="margin-top:15px;">🔍 Calculate 25% of the annual budget. Enter just the number, no commas or dollar signs.</div>
-      `,
-      placeholder: 'Enter the Q2 amount (numbers only)'
-    },
-    5: {
-      icon: '🔀', title: 'The Scrambled Concept',
-      story: 'A critical accounting term has been scrambled in the system! Unscramble the letters to reveal the concept that the auditors are looking for.',
-      content: `
-        <div class="scrambled">L A C R U A C</div>
-        <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:15px 0;">
-          ${['A','C','C','R','U','A','L'].map(l => `<div class="word-letter">${l}</div>`).join('')}
-        </div>
-        <div class="clue-box">🔍 This 7-letter accounting method recognizes revenue when earned and expenses when incurred — regardless of when cash changes hands. It's the opposite of "cash basis" accounting.</div>
-      `,
-      placeholder: 'Enter the unscrambled word'
-    },
-    6: {
-      icon: '🔓', title: 'The Final Lock',
-      story: 'You\'re almost out! The exit door has a 4-digit combination lock. The code follows a mathematical pattern hidden in the sequence below.',
-      content: `
-        <div class="pattern-grid">
-          <div class="pattern-num">2</div>
-          <div class="pattern-num">4</div>
-          <div class="pattern-num">6</div>
-          <div class="pattern-num mystery">?</div>
-        </div>
-        <div style="text-align:center; margin:15px 0; color:rgba(255,255,255,0.5);">
-          The 4-digit code is all four numbers combined
-        </div>
-        <div class="clue-box">🔍 Find the pattern, determine the missing number, then combine all four numbers into a single 4-digit code to unlock the door!</div>
-      `,
-      placeholder: 'Enter the 4-digit code'
-    }
+    1: { icon: '🔢', title: 'The Missing Variance',
+      story: 'The CFO\'s quarterly report has a critical number missing! Find the pattern in the variance column.',
+      content: `<table class="data-table"><tr><th>Dept</th><th>Budget ($K)</th><th>Actual ($K)</th><th>Variance ($K)</th></tr><tr><td>Engineering</td><td>500</td><td>486</td><td>14</td></tr><tr><td>Marketing</td><td>300</td><td>272</td><td>28</td></tr><tr><td>Operations</td><td>200</td><td>158</td><td class="highlight">???</td></tr><tr><td>Sales</td><td>400</td><td>344</td><td>56</td></tr><tr><td>HR</td><td>150</td><td>80</td><td>70</td></tr></table><div class="clue-box">🔍 The variance isn't just Budget minus Actual. Look at ALL the variances — there's a hidden pattern.</div>`,
+      placeholder: 'Enter the missing number' },
+    2: { icon: '🔐', title: 'The Encrypted Memo',
+      story: 'A locked file on the CFO\'s computer! Caesar cipher — each letter shifted forward by 3.',
+      content: `<div class="cipher-text">GHSUHFLDWLRQ</div><div class="clue-box" style="margin-top:12px;">🔍 Caesar Cipher (shift 3). D→A, E→B... It's an expense that spreads cost over time.</div>`,
+      placeholder: 'Enter the decoded word' },
+    3: { icon: '📝', title: 'The CFO\'s Password',
+      story: 'The CFO\'s safe needs a password! A single finance word.',
+      content: `<div style="display:flex;flex-direction:column;gap:10px;"><div style="padding:10px 14px;background:rgba(0,255,136,0.05);border-radius:10px;">✅ 7 letters long</div><div style="padding:10px 14px;background:rgba(0,170,255,0.05);border-radius:10px;">✅ TOP line of an Income Statement</div><div style="padding:10px 14px;background:rgba(255,215,0,0.05);border-radius:10px;">✅ Without this, there is no profit</div><div style="padding:10px 14px;background:rgba(255,0,128,0.05);border-radius:10px;">✅ Starts with 'R', ends with 'E'</div></div><div class="clue-box" style="margin-top:12px;">🔍 What a company earns from selling goods or services.</div>`,
+      placeholder: 'Enter the password' },
+    4: { icon: '🧮', title: 'The Budget Puzzle',
+      story: 'Calculate the correct Q2 allocation to unlock the next clue.',
+      content: `<div class="math-display">📋 <strong>Annual Budget:</strong> $1,500,000<br><br>Q1: 30% → $450,000 ✅<br><span style="color:#ffd700;">Q2: 25% → $???</span> 🔒<br>Q3: 25% → $375,000 ✅<br>Q4: 20% → $300,000 ✅</div><div class="clue-box" style="margin-top:12px;">🔍 Calculate 25% of the annual budget. Numbers only.</div>`,
+      placeholder: 'Enter the Q2 amount' },
+    5: { icon: '🔀', title: 'The Scrambled Concept',
+      story: 'Unscramble the letters to reveal a critical accounting term.',
+      content: `<div class="scrambled">L A C R U A C</div><div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:12px 0;">${['A','C','C','R','U','A','L'].map(l=>`<div class="word-letter">${l}</div>`).join('')}</div><div class="clue-box">🔍 7-letter accounting method — the opposite of "cash basis."</div>`,
+      placeholder: 'Enter the unscrambled word' },
+    6: { icon: '🔓', title: 'The Final Lock',
+      story: 'The exit door has a 4-digit lock. Find the pattern!',
+      content: `<div class="pattern-grid"><div class="pattern-num">2</div><div class="pattern-num">4</div><div class="pattern-num">6</div><div class="pattern-num mystery">?</div></div><div style="text-align:center;margin:12px 0;color:rgba(255,255,255,0.4);font-size:0.9em;">Combine all four numbers into a 4-digit code</div><div class="clue-box">🔍 Each number increases by 2. What comes after 6?</div>`,
+      placeholder: 'Enter the 4-digit code' }
   };
 
-  // Auto-rejoin on refresh
   const saved = sessionStorage.getItem('escapeRoom');
   if (saved) {
     const { name, team } = JSON.parse(saved);
@@ -348,7 +320,7 @@
   socket.on('gameState', (data) => {
     if (data.started) {
       currentPuzzle = data.team.currentPuzzle;
-      if (data.team.finished) { showScreen('victoryScreen'); }
+      if (data.team.finished) showScreen('victoryScreen');
       else { showScreen('puzzleScreen'); renderPuzzle(currentPuzzle); }
     }
   });
@@ -358,56 +330,46 @@
     if (data.correct) {
       input.classList.remove('wrong'); input.classList.add('correct');
       if (data.finished) {
-        const time = formatTime(data.finishTime);
-        document.getElementById('victoryTime').textContent = time;
+        document.getElementById('victoryTime').textContent = fmtTime(data.finishTime);
         setTimeout(() => showScreen('victoryScreen'), 800);
       } else {
         currentPuzzle = data.nextPuzzle;
         setTimeout(() => { input.classList.remove('correct'); input.value = ''; renderPuzzle(currentPuzzle); }, 600);
       }
-    } else {
-      input.classList.add('wrong');
-      setTimeout(() => input.classList.remove('wrong'), 600);
-    }
+    } else { input.classList.add('wrong'); setTimeout(() => input.classList.remove('wrong'), 600); }
   });
 
   socket.on('hintReceived', (data) => {
-    const hintText = document.getElementById('hintText');
-    hintText.textContent = `💡 ${data.hint}`;
-    hintText.classList.add('visible');
+    const h = document.getElementById('hintText');
+    h.textContent = `💡 ${data.hint}`; h.classList.add('visible');
   });
 
   socket.on('gameReset', () => { currentPuzzle = 1; teamName = ''; sessionStorage.removeItem('escapeRoom'); showScreen('joinScreen'); });
 
   function renderPuzzle(num) {
-    const puzzle = puzzles[num];
-    if (!puzzle) return;
+    const p = puzzles[num]; if (!p) return;
     document.getElementById('puzzleNum').textContent = `PUZZLE ${num} / ${totalPuzzles}`;
-    const progressDiv = document.getElementById('puzzleProgress');
-    progressDiv.innerHTML = '';
+    const prog = document.getElementById('puzzleProgress'); prog.innerHTML = '';
     for (let i = 1; i <= totalPuzzles; i++) {
-      const dot = document.createElement('div');
-      dot.className = 'prog-dot';
-      if (i < num) dot.classList.add('done'); else if (i === num) dot.classList.add('active');
-      progressDiv.appendChild(dot);
+      const d = document.createElement('div'); d.className = 'prog-dot';
+      if (i < num) d.classList.add('done'); else if (i === num) d.classList.add('active');
+      prog.appendChild(d);
     }
     document.getElementById('puzzleBody').innerHTML = `
-      <div class="puzzle-title">${puzzle.icon} ${puzzle.title}</div>
-      <div class="puzzle-story">${puzzle.story}</div>
-      <div class="puzzle-content">${puzzle.content}</div>
-    `;
+      <div class="puzzle-title">${p.icon} ${p.title}</div>
+      <div class="puzzle-story">${p.story}</div>
+      <div class="puzzle-content">${p.content}</div>`;
     const input = document.getElementById('answerInput');
-    input.value = ''; input.placeholder = puzzle.placeholder;
-    input.classList.remove('wrong', 'correct');
+    input.value = ''; input.placeholder = p.placeholder;
+    input.classList.remove('wrong','correct');
     document.getElementById('hintText').classList.remove('visible');
     document.getElementById('hintText').textContent = '';
     setTimeout(() => input.focus(), 100);
   }
 
   function submitAnswer() {
-    const answer = document.getElementById('answerInput').value.trim();
-    if (!answer) return;
-    socket.emit('submitAnswer', { puzzleNumber: currentPuzzle, answer });
+    const a = document.getElementById('answerInput').value.trim();
+    if (a) socket.emit('submitAnswer', { puzzleNumber: currentPuzzle, answer: a });
   }
 
   function requestHint() { socket.emit('requestHint', { puzzleNumber: currentPuzzle }); }
@@ -424,11 +386,9 @@
     document.getElementById(id).classList.add('active');
   }
 
-  function formatTime(ms) {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}m ${seconds}s`;
+  function fmtTime(ms) {
+    const s = Math.floor(ms/1000), m = Math.floor(s/60);
+    return `${m}m ${s%60}s`;
   }
 </script>
 </body>
