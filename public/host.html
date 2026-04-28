@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +19,7 @@
   }
 
   /* Ambient background */
-  .bg {
+  .ambient-bg {
     position: fixed; inset: 0; z-index: 0;
     background:
       radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.1) 0%, transparent 60%),
@@ -78,7 +80,8 @@
 
   .lobby-header h2 {
     font-size: clamp(2.5em, 5vw, 4em); font-weight: 900;
-    color: rgba(255,255,255,0.6);
+    background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     animation: fadeIn 1s ease;
   }
 
@@ -215,7 +218,7 @@
 </style>
 </head>
 <body>
-<div class="bg"></div>
+<div class="ambient-bg"></div>
 <div class="container">
   <div class="header">
     <div class="brand">
