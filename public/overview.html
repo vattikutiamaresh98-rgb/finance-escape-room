@@ -73,9 +73,10 @@
 
   .process-panel h2 {
     font-size: clamp(2em, 4vw, 3.5em); font-weight: 900; text-align: center;
-    color: rgba(255,255,255,0.7);
-  }
-  .process-panel h2 .thin { font-weight: 300; color: rgba(255,255,255,0.4); }
+   background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
+   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+ }
+ .process-panel h2 .thin { font-weight: 300; -webkit-text-fill-color: rgba(255,255,255,0.4); }
 
   .steps-row {
     display: grid; grid-template-columns: repeat(4, 1fr);
@@ -139,10 +140,11 @@
   /* CTA */
   .cta-panel { flex-direction: column; gap: 40px; }
 
-  .cta-panel h2 {
-    font-size: clamp(2em, 4vw, 3em); font-weight: 900;
-    color: rgba(255,255,255,0.7);
-  }
+ .cta-panel h2 {
+   font-size: clamp(2em, 4vw, 3em); font-weight: 900;
+   background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
+   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+ }
 
   .cta-links { display: flex; gap: 20px; }
 
