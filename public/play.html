@@ -1,3 +1,6 @@
+
+Purpose: Print final play.html
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,15 +30,18 @@
 
   #joinScreen::before {
     content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.1) 0%, transparent 60%);
-    animation: glow 8s ease-in-out infinite alternate;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.1) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 85% 15%, rgba(0,170,255,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 40% at 15% 85%, rgba(255,0,128,0.06) 0%, transparent 50%);
+    animation: glow 12s ease-in-out infinite alternate;
   }
-  @keyframes glow { 0% { transform: scale(1); } 100% { transform: scale(1.2); } }
+  @keyframes glow { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
   .join-logo { font-size: 3.5em; z-index: 1; }
   .join-title {
     font-size: 1.8em; font-weight: 900; z-index: 1; text-align: center;
-    background: linear-gradient(135deg, #00ff88, #00aaff);
+    background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   }
   .join-sub { color: rgba(255,255,255,0.3); font-size: 0.85em; z-index: 1; letter-spacing: 2px; text-transform: uppercase; }
@@ -87,7 +93,7 @@
 
   .puzzle-title {
     font-size: 1.15em; font-weight: 800;
-    background: linear-gradient(135deg, #00ff88, #00aaff);
+    background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     display: flex; align-items: center; gap: 10px;
   }
