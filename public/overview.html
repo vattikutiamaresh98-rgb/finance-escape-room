@@ -1,18 +1,15 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SPS FP&A Escape Room — How I Built It</title>
+<title>Operation: Unlock the OP — How We Built It</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body { font-family: 'Inter', sans-serif; background: #000; color: #fff; overflow-x: hidden; }
 
-  /* Consistent ambient bg across all pages */
   .ambient-bg {
     position: fixed; inset: 0; z-index: 0;
     background:
@@ -30,10 +27,7 @@
   }
 
   /* HERO */
-  .hero-content {
-    position: relative; z-index: 1; text-align: center;
-    max-width: 900px; padding: 0 40px;
-  }
+  .hero-content { position: relative; z-index: 1; text-align: center; max-width: 900px; padding: 0 40px; }
 
   .hero-content .badge {
     display: inline-block; padding: 10px 24px; border-radius: 30px;
@@ -44,7 +38,7 @@
   }
 
   .hero-content h1 {
-    font-size: clamp(3em, 8vw, 7em); font-weight: 900; line-height: 1;
+    font-size: clamp(2.5em, 7vw, 5.5em); font-weight: 900; line-height: 1.1;
     background: linear-gradient(135deg, #00ff88 0%, #00aaff 40%, #ff0080 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-size: 200% 200%; animation: fadeUp 1s ease 0.4s forwards, grad 8s ease infinite;
@@ -53,7 +47,7 @@
   @keyframes grad { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
   .hero-content .tagline {
-    font-size: clamp(1.1em, 2.5vw, 1.6em); color: rgba(255,255,255,0.5);
+    font-size: clamp(1em, 2vw, 1.4em); color: rgba(255,255,255,0.5);
     margin-top: 20px; font-weight: 300; line-height: 1.6;
     opacity: 0; animation: fadeUp 1s ease 0.6s forwards;
   }
@@ -68,15 +62,63 @@
   .scroll-cue .arrow { width: 20px; height: 20px; border-right: 2px solid rgba(255,255,255,0.25); border-bottom: 2px solid rgba(255,255,255,0.25); transform: rotate(45deg); animation: bounce 2s infinite; }
   @keyframes bounce { 0%,100% { transform: rotate(45deg) translateY(0); } 50% { transform: rotate(45deg) translateY(6px); } }
 
-  /* PROCESS */
+  /* MISSION BRIEFING */
+  .mission-panel { flex-direction: column; padding: 60px 40px; gap: 40px; }
+
+  .mission-panel h2 {
+    font-size: clamp(2em, 4vw, 3em); font-weight: 900; text-align: center;
+    background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  .briefing-box {
+    max-width: 800px; padding: 30px 40px;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+    border-left: 4px solid #00ff88; border-radius: 0 16px 16px 0;
+    font-size: 1.1em; color: rgba(255,255,255,0.6); line-height: 1.8;
+    font-style: italic;
+  }
+  .briefing-box strong { color: #fff; font-style: normal; }
+  .briefing-box .hl { color: #00ff88; font-style: normal; font-weight: 700; }
+
+  .clue-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 14px; max-width: 900px; width: 100%;
+  }
+
+  .clue-card {
+    padding: 20px; text-align: center;
+    background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px; transition: all 0.3s;
+  }
+  .clue-card:hover { border-color: rgba(0,255,136,0.2); background: rgba(255,255,255,0.05); }
+  .clue-card .c-num { font-size: 0.7em; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+  .clue-card .c-type { font-size: 0.75em; color: #00aaff; font-weight: 600; margin-bottom: 8px; }
+  .clue-card .c-icon { font-size: 1.8em; margin-bottom: 8px; }
+  .clue-card .c-name { font-weight: 700; font-size: 0.95em; }
+
+  .clue-card.final {
+    grid-column: span 3;
+    background: rgba(0,255,136,0.04); border-color: rgba(0,255,136,0.15);
+  }
+
+  .diff-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 10px;
+    font-size: 0.65em; font-weight: 700; margin-top: 6px;
+  }
+  .diff-easy { background: rgba(0,255,136,0.15); color: #00ff88; }
+  .diff-med { background: rgba(255,170,0,0.15); color: #ffaa00; }
+  .diff-hard { background: rgba(255,68,68,0.15); color: #ff4444; }
+
+  /* HOW WE BUILT IT */
   .process-panel { flex-direction: column; padding: 60px 40px; gap: 50px; }
 
   .process-panel h2 {
     font-size: clamp(2em, 4vw, 3.5em); font-weight: 900; text-align: center;
-   background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
-   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
- }
- .process-panel h2 .thin { font-weight: 300; -webkit-text-fill-color: rgba(255,255,255,0.4); }
+    background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .process-panel h2 .thin { font-weight: 300; -webkit-text-fill-color: rgba(255,255,255,0.4); }
 
   .steps-row {
     display: grid; grid-template-columns: repeat(4, 1fr);
@@ -140,11 +182,11 @@
   /* CTA */
   .cta-panel { flex-direction: column; gap: 40px; }
 
- .cta-panel h2 {
-   font-size: clamp(2em, 4vw, 3em); font-weight: 900;
-   background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
-   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
- }
+  .cta-panel h2 {
+    font-size: clamp(2em, 4vw, 3em); font-weight: 900;
+    background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
 
   .cta-links { display: flex; gap: 20px; }
 
@@ -168,7 +210,6 @@
   }
 
   @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-
   .reveal { opacity: 0; transform: translateY(40px); transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 </style>
@@ -176,13 +217,14 @@
 <body>
 <div class="ambient-bg"></div>
 
+<!-- HERO -->
 <section class="panel">
   <div class="hero-content">
-    <div class="badge">🤖 Built with AI · Zero Code · One Hour</div>
-    <h1>Finance<br>Escape Room</h1>
+    <div class="badge">🔒 SPS FP&A Icebreaker · May 2026</div>
+    <h1>Operation:<br>Unlock the OP</h1>
     <div class="tagline">
-      <strong>Teams race to solve finance puzzles on their phones</strong><br>
-      while a live leaderboard lights up the big screen.
+      <strong>Your team's OP1 submission has been corrupted.</strong><br>
+      Solve 8 clues. Collect the fragments. Submit the code. Save the business review.
     </div>
   </div>
   <div class="scroll-cue">
@@ -191,8 +233,80 @@
   </div>
 </section>
 
+<!-- MISSION BRIEFING -->
+<section class="panel mission-panel">
+  <h2 class="reveal">Mission Briefing</h2>
+  <div class="briefing-box reveal">
+    "It's OP1 season. Your team's submission document has been <span class="hl">corrupted</span> and the deadline is in <strong>15 minutes</strong>. Eight fragments of the unlock code are scattered across the system. Solve each challenge to recover a fragment. Collect all eight. <span class="hl">Submit the OP.</span> Go."
+  </div>
+  <div class="clue-grid reveal">
+    <div class="clue-card">
+      <div class="c-num">Clue 1</div>
+      <div class="c-icon">🧠</div>
+      <div class="c-name">The Weekly Ritual</div>
+      <div class="c-type">Riddle</div>
+      <div class="diff-badge diff-easy">Easy</div>
+    </div>
+    <div class="clue-card">
+      <div class="c-num">Clue 2</div>
+      <div class="c-icon">🔐</div>
+      <div class="c-name">The Encoded Message</div>
+      <div class="c-type">Cipher</div>
+      <div class="diff-badge diff-easy">Easy</div>
+    </div>
+    <div class="clue-card">
+      <div class="c-num">Clue 3</div>
+      <div class="c-icon">📊</div>
+      <div class="c-name">Hero or Villain</div>
+      <div class="c-type">Riddle</div>
+      <div class="diff-badge diff-easy">Easy</div>
+    </div>
+    <div class="clue-card">
+      <div class="c-num">Clue 4</div>
+      <div class="c-icon">📅</div>
+      <div class="c-name">Twice a Year</div>
+      <div class="c-type">Riddle</div>
+      <div class="diff-badge diff-med">Medium</div>
+    </div>
+    <div class="clue-card">
+      <div class="c-num">Clue 5</div>
+      <div class="c-icon">🧮</div>
+      <div class="c-name">Seller Math</div>
+      <div class="c-type">Logic Puzzle</div>
+      <div class="diff-badge diff-med">Medium</div>
+    </div>
+    <div class="clue-card">
+      <div class="c-num">Clue 6</div>
+      <div class="c-icon">🔀</div>
+      <div class="c-name">The Scramble</div>
+      <div class="c-type">Word Unscramble</div>
+      <div class="diff-badge diff-hard">Hard</div>
+    </div>
+    <div class="clue-card">
+      <div class="c-num">Clue 7</div>
+      <div class="c-icon">🚦</div>
+      <div class="c-name">Green Red Yellow</div>
+      <div class="c-type">Lateral Thinking</div>
+      <div class="diff-badge diff-hard">Hard</div>
+    </div>
+    <div class="clue-card">
+      <div class="c-num">Clue 8</div>
+      <div class="c-icon">📋</div>
+      <div class="c-name">The LP Order</div>
+      <div class="c-type">Ordering Challenge</div>
+      <div class="diff-badge diff-hard">Very Hard</div>
+    </div>
+    <div class="clue-card final">
+      <div class="c-icon">🔓</div>
+      <div class="c-name">Final Assembly — Enter the Unlock Code</div>
+      <div class="c-type">Combine all 8 fragments</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE BUILT IT -->
 <section class="panel process-panel">
-  <h2 class="reveal"><span class="thin">How I</span> built it</h2>
+  <h2 class="reveal"><span class="thin">How we</span> built it</h2>
   <div class="steps-row reveal">
     <div class="step-item">
       <div class="num">01</div>
@@ -225,6 +339,7 @@
   </div>
 </section>
 
+<!-- STATS -->
 <section class="panel stats-panel">
   <div class="stats-row reveal">
     <div class="stat-item">
@@ -236,8 +351,8 @@
       <div class="label">Total Cost</div>
     </div>
     <div class="stat-item">
-      <div class="val">6</div>
-      <div class="label">Puzzles</div>
+      <div class="val">9</div>
+      <div class="label">Clues</div>
     </div>
     <div class="stat-item">
       <div class="val">∞</div>
@@ -250,6 +365,7 @@
   </div>
 </section>
 
+<!-- CTA -->
 <section class="panel cta-panel">
   <h2 class="reveal">Try it live</h2>
   <div class="cta-links reveal">
@@ -257,7 +373,7 @@
       <span class="ico">🖥️</span> Host Screen
     </a>
     <a class="cta-link" href="https://finance-escape-room.onrender.com/play" target="_blank">
-      <span class="ico">📱</span> Player Screen
+      <span class="ico">💻</span> Player Screen
     </a>
   </div>
   <div class="footer-line">Built with AI · Powered by Amazon AgentSpaces</div>
