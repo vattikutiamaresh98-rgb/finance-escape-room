@@ -246,6 +246,18 @@
     }
   });
 
+  const revealTexts = {
+    1: 'The document is beginning to decrypt. Fragment collected: W',
+    2: 'Decoded. Fragment collected: S',
+    3: 'Correct. First letter of the answer. Fragment collected: V',
+    4: 'I come twice a year. Fragment collected: 2',
+    5: 'Correct. First digit of the answer. Fragment collected: 1',
+    6: 'Customer Obsession is LP #1. Fragment collected: C',
+    7: 'First letter of the answer. Fragment collected: K',
+    8: 'Deliver Results sits at position 16. Fragment collected: 16',
+    9: 'Code accepted. The OP is submitted!'
+  };
+
   socket.on('puzzleResult', (data) => {
     const input = document.getElementById('answerInput');
     if (data.correct) {
@@ -254,12 +266,20 @@
       if (fragments[data.puzzleNumber] && !collectedFragments.includes(fragments[data.puzzleNumber])) {
         collectedFragments.push(fragments[data.puzzleNumber]);
       }
+      // Show reveal text
+      const hint = document.getElementById('hintText');
+      hint.textContent = `✅ ${revealTexts[data.puzzleNumber] || 'Correct!'}`;
+      hint.classList.add('visible');
+      hint.style.background = 'rgba(0,255,136,0.08)';
+      hint.style.borderColor = 'rgba(0,255,136,0.2)';
+      hint.style.color = '#00ff88';
+
       if (data.finished) {
         document.getElementById('victoryTime').textContent = fmtTime(data.finishTime);
-        setTimeout(() => showScreen('victoryScreen'), 800);
+        setTimeout(() => showScreen('victoryScreen'), 1500);
       } else {
         currentPuzzle = data.nextPuzzle;
-        setTimeout(() => { input.classList.remove('correct'); input.value = ''; renderPuzzle(currentPuzzle); }, 600);
+        setTimeout(() => { input.classList.remove('correct'); input.value = ''; renderPuzzle(currentPuzzle); }, 1500);
       }
     } else { input.classList.add('wrong'); setTimeout(() => input.classList.remove('wrong'), 600); }
   });
