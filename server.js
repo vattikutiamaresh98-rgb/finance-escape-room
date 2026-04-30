@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -128,7 +126,8 @@ io.on('connection', (socket) => {
     if (team.finished) return;
     
     const correctAnswer = puzzleAnswers[puzzleNumber];
-    const isCorrect = answer.toString().toLowerCase().trim() === correctAnswer.toLowerCase();
+    const normalize = s => s.toString().toLowerCase().trim().replace(/\s*,\s*/g, ',').replace(/\s+/g, ' ');
+    const isCorrect = normalize(answer) === normalize(correctAnswer);
 
     if (isCorrect) {
       team.solvedPuzzles.push(puzzleNumber);
