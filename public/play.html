@@ -4,32 +4,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🔓 Finance Escape Room — Play</title>
+<title>🔒 Operation: Unlock the OP</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #000;
-    color: #fff;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
-  }
+  body { font-family: 'Inter', sans-serif; background: #000; color: #fff; min-height: 100vh; min-height: -webkit-fill-available; }
 
   .screen { display: none; min-height: 100vh; padding: 24px; }
   .screen.active { display: flex; flex-direction: column; }
 
   /* JOIN */
-  #joinScreen {
-    align-items: center; justify-content: center; gap: 28px;
-    position: relative; overflow: hidden;
-  }
-
+  #joinScreen { align-items: center; justify-content: center; gap: 28px; position: relative; overflow: hidden; }
   #joinScreen::before {
     content: ''; position: absolute; inset: 0;
-    background:
-      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.1) 0%, transparent 60%),
+    background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(0,255,136,0.1) 0%, transparent 60%),
       radial-gradient(ellipse 60% 50% at 85% 15%, rgba(0,170,255,0.08) 0%, transparent 50%),
       radial-gradient(ellipse 50% 40% at 15% 85%, rgba(255,0,128,0.06) 0%, transparent 50%);
     animation: glow 12s ease-in-out infinite alternate;
@@ -37,32 +26,17 @@
   @keyframes glow { 0% { transform: scale(1); } 100% { transform: scale(1.1); } }
 
   .join-logo { font-size: 3.5em; z-index: 1; }
-  .join-title {
-    font-size: 1.8em; font-weight: 900; z-index: 1; text-align: center;
-    background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
+  .join-title { font-size: 1.6em; font-weight: 900; z-index: 1; text-align: center; background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
   .join-sub { color: rgba(255,255,255,0.3); font-size: 0.85em; z-index: 1; letter-spacing: 2px; text-transform: uppercase; }
 
   .join-form { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 16px; z-index: 1; }
   .input-group { display: flex; flex-direction: column; gap: 6px; }
   .input-group label { font-size: 0.75em; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
-
-  .input-group input, .input-group select {
-    padding: 16px 20px; background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1); border-radius: 14px;
-    color: #fff; font-size: 1.05em; font-family: 'Inter', sans-serif;
-    outline: none; transition: all 0.3s;
-  }
+  .input-group input, .input-group select { padding: 16px 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: #fff; font-size: 1.05em; font-family: 'Inter', sans-serif; outline: none; transition: all 0.3s; }
   .input-group input:focus, .input-group select:focus { border-color: #00ff88; box-shadow: 0 0 20px rgba(0,255,136,0.15); }
   .input-group select option { background: #111; }
 
-  .join-btn {
-    padding: 18px; background: linear-gradient(135deg, #00ff88, #00aaff);
-    color: #000; border: none; border-radius: 14px; font-size: 1.1em;
-    font-weight: 900; cursor: pointer; letter-spacing: 2px;
-    text-transform: uppercase; transition: all 0.3s; margin-top: 8px;
-  }
+  .join-btn { padding: 18px; background: linear-gradient(135deg, #00ff88, #00aaff); color: #000; border: none; border-radius: 14px; font-size: 1.1em; font-weight: 900; cursor: pointer; letter-spacing: 2px; text-transform: uppercase; transition: all 0.3s; margin-top: 8px; }
   .join-btn:active { transform: scale(0.97); }
 
   /* WAIT */
@@ -74,12 +48,7 @@
 
   /* PUZZLE */
   #puzzleScreen { gap: 0; padding: 0; }
-
-  .puzzle-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 20px; background: rgba(255,255,255,0.02);
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-  }
+  .puzzle-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.06); }
   .puzzle-num { font-size: 0.85em; font-weight: 700; color: #00aaff; }
   .puzzle-progress { display: flex; gap: 5px; }
   .prog-dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.08); transition: all 0.3s; }
@@ -87,134 +56,57 @@
   .prog-dot.active { background: #00aaff; animation: dotP 1s infinite; }
   @keyframes dotP { 0%,100% { box-shadow: 0 0 3px rgba(0,170,255,0.2); } 50% { box-shadow: 0 0 10px rgba(0,170,255,0.5); } }
 
+  /* Fragment bar */
+  .fragment-bar { display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgba(0,255,136,0.04); border-bottom: 1px solid rgba(0,255,136,0.1); font-size: 0.8em; }
+  .fragment-bar .label { color: rgba(255,255,255,0.4); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+  .fragment-item { padding: 3px 10px; background: rgba(0,255,136,0.15); border-radius: 6px; color: #00ff88; font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 0.95em; }
+  .fragment-item.empty { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.2); }
+
   .puzzle-body { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+  .puzzle-title { font-size: 1.15em; font-weight: 800; background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: flex; align-items: center; gap: 10px; }
+  .puzzle-story { color: rgba(255,255,255,0.55); line-height: 1.6; font-size: 0.9em; padding: 14px; background: rgba(255,255,255,0.02); border-left: 3px solid rgba(0,170,255,0.4); border-radius: 0 10px 10px 0; }
+  .puzzle-content { padding: 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 14px; }
 
-  .puzzle-title {
-    font-size: 1.15em; font-weight: 800;
-    background: linear-gradient(135deg, #00ff88, #00aaff, #ff0080);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    display: flex; align-items: center; gap: 10px;
-  }
-
-  .puzzle-story {
-    color: rgba(255,255,255,0.55); line-height: 1.6; font-size: 0.9em; padding: 14px;
-    background: rgba(255,255,255,0.02); border-left: 3px solid rgba(0,170,255,0.4); border-radius: 0 10px 10px 0;
-  }
-
-  .puzzle-content {
-    padding: 18px; background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06); border-radius: 14px;
-  }
-
-  .data-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size: 0.8em; margin: 8px 0; }
-  .data-table th { padding: 8px 10px; text-align: left; color: #00aaff; border-bottom: 1px solid rgba(0,170,255,0.2); font-weight: 600; }
-  .data-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-  .data-table .highlight { color: #ff6b6b; font-weight: 700; }
-
-  .cipher-text {
-    font-family: 'JetBrains Mono', monospace; font-size: 1.2em; text-align: center;
-    padding: 18px; background: rgba(0,0,0,0.4); border-radius: 10px;
-    letter-spacing: 4px; color: #ffd700; word-break: break-all;
-  }
-
-  .word-grid { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; padding: 8px; }
-  .word-letter {
-    width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 8px; font-family: 'JetBrains Mono', monospace; font-size: 1em; font-weight: 700;
-  }
-
-  .scrambled {
-    font-family: 'JetBrains Mono', monospace; font-size: 1.8em; text-align: center;
-    letter-spacing: 8px; color: #ff6b6b; padding: 12px;
-    animation: shake 0.5s ease-in-out infinite alternate;
-  }
-  @keyframes shake { from { transform: rotate(-1deg); } to { transform: rotate(1deg); } }
-
-  .pattern-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 240px; margin: 8px auto; }
-  .pattern-num {
-    padding: 14px; text-align: center; font-family: 'JetBrains Mono', monospace;
-    font-size: 1.2em; font-weight: 700;
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
-  }
-  .pattern-num.mystery { background: rgba(255,215,0,0.1); border-color: rgba(255,215,0,0.3); color: #ffd700; }
-
-  .clue-box {
-    padding: 12px 14px; background: rgba(255,215,0,0.05);
-    border: 1px dashed rgba(255,215,0,0.2); border-radius: 10px;
-    color: #ffd700; font-size: 0.85em; font-style: italic; line-height: 1.5;
-  }
-
-  .math-display {
-    font-family: 'JetBrains Mono', monospace; font-size: 1em;
-    padding: 14px; background: rgba(0,0,0,0.3); border-radius: 10px; line-height: 2;
-  }
+  .cipher-text { font-family: 'JetBrains Mono', monospace; font-size: 1.4em; text-align: center; padding: 18px; background: rgba(0,0,0,0.4); border-radius: 10px; letter-spacing: 6px; color: #ffd700; }
+  .scramble-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 10px; }
+  .scramble-word { padding: 10px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.95em; font-weight: 700; color: #ff6b6b; }
+  .order-item { padding: 12px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; font-size: 0.95em; margin: 4px 0; }
+  .clue-box { padding: 12px 14px; background: rgba(255,215,0,0.05); border: 1px dashed rgba(255,215,0,0.2); border-radius: 10px; color: #ffd700; font-size: 0.85em; font-style: italic; line-height: 1.5; }
+  .reveal-text { padding: 12px 14px; background: rgba(0,255,136,0.06); border: 1px solid rgba(0,255,136,0.15); border-radius: 10px; color: #00ff88; font-size: 0.85em; font-style: italic; display: none; }
 
   /* Answer */
   .answer-area { padding: 16px 20px; background: rgba(255,255,255,0.02); border-top: 1px solid rgba(255,255,255,0.06); }
   .answer-row { display: flex; gap: 10px; }
-
-  .answer-input {
-    flex: 1; padding: 16px 18px; background: rgba(255,255,255,0.05);
-    border: 2px solid rgba(255,255,255,0.1); border-radius: 14px;
-    color: #fff; font-size: 1.05em; font-family: 'JetBrains Mono', monospace;
-    outline: none; transition: all 0.3s;
-  }
+  .answer-input { flex: 1; padding: 16px 18px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); border-radius: 14px; color: #fff; font-size: 1.05em; font-family: 'JetBrains Mono', monospace; outline: none; transition: all 0.3s; }
   .answer-input:focus { border-color: #00aaff; box-shadow: 0 0 15px rgba(0,170,255,0.15); }
   .answer-input.wrong { border-color: #ff4444; animation: inputShake 0.5s; }
   .answer-input.correct { border-color: #00ff88; box-shadow: 0 0 15px rgba(0,255,136,0.2); }
   @keyframes inputShake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
 
-  .submit-btn {
-    padding: 16px 24px; background: linear-gradient(135deg, #00aaff, #0088cc);
-    color: #fff; border: none; border-radius: 14px; font-size: 1.05em;
-    font-weight: 800; cursor: pointer; transition: all 0.3s; white-space: nowrap;
-  }
+  .submit-btn { padding: 16px 24px; background: linear-gradient(135deg, #00aaff, #0088cc); color: #fff; border: none; border-radius: 14px; font-size: 1.05em; font-weight: 800; cursor: pointer; transition: all 0.3s; white-space: nowrap; }
   .submit-btn:active { transform: scale(0.95); }
 
-  .hint-btn {
-    display: block; margin-top: 10px; padding: 10px; background: none;
-    border: 1px solid rgba(255,215,0,0.15); color: rgba(255,215,0,0.6);
-    border-radius: 10px; cursor: pointer; font-size: 0.8em; width: 100%; transition: all 0.3s;
-  }
+  .hint-btn { display: block; margin-top: 10px; padding: 10px; background: none; border: 1px solid rgba(255,215,0,0.15); color: rgba(255,215,0,0.6); border-radius: 10px; cursor: pointer; font-size: 0.8em; width: 100%; transition: all 0.3s; }
   .hint-btn:active { background: rgba(255,215,0,0.08); }
-
-  .hint-text {
-    display: none; margin-top: 10px; padding: 12px;
-    background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.12);
-    border-radius: 10px; color: #ffd700; font-size: 0.85em; line-height: 1.5;
-  }
+  .hint-text { display: none; margin-top: 10px; padding: 12px; background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.12); border-radius: 10px; color: #ffd700; font-size: 0.85em; line-height: 1.5; }
   .hint-text.visible { display: block; }
 
   /* VICTORY */
-  #victoryScreen {
-    align-items: center; justify-content: center; gap: 20px; text-align: center;
-    position: relative; overflow: hidden;
-  }
-  #victoryScreen::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 50%, rgba(0,255,136,0.12) 0%, transparent 60%);
-  }
+  #victoryScreen { align-items: center; justify-content: center; gap: 20px; text-align: center; position: relative; overflow: hidden; }
+  #victoryScreen::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 50%, rgba(0,255,136,0.12) 0%, transparent 60%); }
   .victory-emoji { font-size: 5em; z-index: 1; animation: vBounce 1s infinite; }
   @keyframes vBounce { 0%,100% { transform: scale(1); } 25% { transform: scale(1.1) rotate(-5deg); } 75% { transform: scale(1.1) rotate(5deg); } }
-  .victory-title {
-    font-size: 2.2em; font-weight: 900; z-index: 1;
-    background: linear-gradient(135deg, #ffd700, #ff8800);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .victory-time {
-    font-size: 1.5em; font-weight: 900; z-index: 1;
-    background: linear-gradient(135deg, #00ff88, #00aaff);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .victory-msg { color: rgba(255,255,255,0.4); font-size: 1em; max-width: 300px; z-index: 1; line-height: 1.5; }
+  .victory-title { font-size: 2em; font-weight: 900; z-index: 1; background: linear-gradient(135deg, #ffd700, #ff8800); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .victory-sub { font-size: 1.1em; z-index: 1; color: rgba(255,255,255,0.7); }
+  .victory-time { font-size: 1.5em; font-weight: 900; z-index: 1; background: linear-gradient(135deg, #00ff88, #00aaff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .victory-msg { color: rgba(255,255,255,0.4); font-size: 0.95em; max-width: 320px; z-index: 1; line-height: 1.5; }
 </style>
 </head>
 <body>
 
 <div class="screen active" id="joinScreen">
-  <div class="join-logo">🏦</div>
-  <div class="join-title">Finance Escape Room</div>
+  <div class="join-logo">🔒</div>
+  <div class="join-title">Operation: Unlock the OP</div>
   <div class="join-sub">SPS FP&A Edition</div>
   <div class="join-form">
     <div class="input-group">
@@ -233,20 +125,24 @@
         <option value="💎 EBITDA Elite">💎 EBITDA Elite</option>
       </select>
     </div>
-    <button class="join-btn" onclick="joinGame()">Join Game</button>
+    <button class="join-btn" onclick="joinGame()">Enter the Mission</button>
   </div>
 </div>
 
 <div class="screen" id="waitScreen">
-  <div class="wait-icon">⏳</div>
+  <div class="wait-icon">🔒</div>
   <div class="wait-team" id="waitTeamName"></div>
-  <div class="wait-msg">Waiting for the host to start...</div>
+  <div class="wait-msg">Standing by for mission launch...</div>
 </div>
 
 <div class="screen" id="puzzleScreen">
   <div class="puzzle-header">
-    <div class="puzzle-num" id="puzzleNum">PUZZLE 1 / 6</div>
+    <div class="puzzle-num" id="puzzleNum">CLUE 1 / 9</div>
     <div class="puzzle-progress" id="puzzleProgress"></div>
+  </div>
+  <div class="fragment-bar" id="fragmentBar">
+    <div class="label">🔑 Fragments:</div>
+    <div id="fragmentList"></div>
   </div>
   <div class="puzzle-body" id="puzzleBody"></div>
   <div class="answer-area">
@@ -260,42 +156,58 @@
 </div>
 
 <div class="screen" id="victoryScreen">
-  <div class="victory-emoji">🏆</div>
-  <div class="victory-title">YOU ESCAPED!</div>
+  <div class="victory-emoji">🔓</div>
+  <div class="victory-title">OP SUBMITTED!</div>
+  <div class="victory-sub">The document is restored.</div>
   <div class="victory-time" id="victoryTime">00:00</div>
-  <div class="victory-msg">Your team cracked all the puzzles! The CFO's secrets are safe... for now. 🕵️</div>
+  <div class="victory-msg">Your team cracked all the clues and saved the business review. Well done. 🕵️</div>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
   const socket = io();
-  let currentPuzzle = 1, teamName = '', totalPuzzles = 6;
+  let currentPuzzle = 1, teamName = '', totalPuzzles = 9;
+
+  const fragments = { 1:'W', 2:'S', 3:'V', 4:'2', 5:'1', 6:'C', 7:'K', 8:'16' };
+  let collectedFragments = [];
 
   const puzzles = {
-    1: { icon: '🔢', title: 'The Missing Variance',
-      story: 'The CFO\'s quarterly report has a critical number missing! Find the pattern in the variance column.',
-      content: `<table class="data-table"><tr><th>Dept</th><th>Budget ($K)</th><th>Actual ($K)</th><th>Variance ($K)</th></tr><tr><td>Engineering</td><td>500</td><td>486</td><td>14</td></tr><tr><td>Marketing</td><td>300</td><td>272</td><td>28</td></tr><tr><td>Operations</td><td>200</td><td>158</td><td class="highlight">???</td></tr><tr><td>Sales</td><td>400</td><td>344</td><td>56</td></tr><tr><td>HR</td><td>150</td><td>80</td><td>70</td></tr></table><div class="clue-box">🔍 The variance isn't just Budget minus Actual. Look at ALL the variances — there's a hidden pattern.</div>`,
-      placeholder: 'Enter the missing number' },
-    2: { icon: '🔐', title: 'The Encrypted Memo',
-      story: 'A locked file on the CFO\'s computer! Caesar cipher — each letter shifted forward by 3.',
-      content: `<div class="cipher-text">GHSUHFLDWLRQ</div><div class="clue-box" style="margin-top:12px;">🔍 Caesar Cipher (shift 3). D→A, E→B... It's an expense that spreads cost over time.</div>`,
-      placeholder: 'Enter the decoded word' },
-    3: { icon: '📝', title: 'The CFO\'s Password',
-      story: 'The CFO\'s safe needs a password! A single finance word.',
-      content: `<div style="display:flex;flex-direction:column;gap:10px;"><div style="padding:10px 14px;background:rgba(0,255,136,0.05);border-radius:10px;">✅ 7 letters long</div><div style="padding:10px 14px;background:rgba(0,170,255,0.05);border-radius:10px;">✅ TOP line of an Income Statement</div><div style="padding:10px 14px;background:rgba(255,215,0,0.05);border-radius:10px;">✅ Without this, there is no profit</div><div style="padding:10px 14px;background:rgba(255,0,128,0.05);border-radius:10px;">✅ Starts with 'R', ends with 'E'</div></div><div class="clue-box" style="margin-top:12px;">🔍 What a company earns from selling goods or services.</div>`,
-      placeholder: 'Enter the password' },
-    4: { icon: '🧮', title: 'The Budget Puzzle',
-      story: 'Calculate the correct Q2 allocation to unlock the next clue.',
-      content: `<div class="math-display">📋 <strong>Annual Budget:</strong> $1,500,000<br><br>Q1: 30% → $450,000 ✅<br><span style="color:#ffd700;">Q2: 25% → $???</span> 🔒<br>Q3: 25% → $375,000 ✅<br>Q4: 20% → $300,000 ✅</div><div class="clue-box" style="margin-top:12px;">🔍 Calculate 25% of the annual budget. Numbers only.</div>`,
-      placeholder: 'Enter the Q2 amount' },
-    5: { icon: '🔀', title: 'The Scrambled Concept',
-      story: 'Unscramble the letters to reveal a critical accounting term.',
-      content: `<div class="scrambled">L A C R U A C</div><div style="display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:12px 0;">${['A','C','C','R','U','A','L'].map(l=>`<div class="word-letter">${l}</div>`).join('')}</div><div class="clue-box">🔍 7-letter accounting method — the opposite of "cash basis."</div>`,
-      placeholder: 'Enter the unscrambled word' },
-    6: { icon: '🔓', title: 'The Final Lock',
-      story: 'The exit door has a 4-digit lock. Find the pattern!',
-      content: `<div class="pattern-grid"><div class="pattern-num">2</div><div class="pattern-num">4</div><div class="pattern-num">6</div><div class="pattern-num mystery">?</div></div><div style="text-align:center;margin:12px 0;color:rgba(255,255,255,0.4);font-size:0.9em;">Combine all four numbers into a 4-digit code</div><div class="clue-box">🔍 Each number increases by 2. What comes after 6?</div>`,
-      placeholder: 'Enter the 4-digit code' }
+    1: { icon: '🧠', title: 'The Weekly Ritual',
+      story: 'The system is waking up. Answer this to begin decryption.',
+      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"Every week I carry the story of the business. Leaders read me in silence before they speak. No presenter required. What am I?"</em></div><div class="clue-box">🔍 Three letters. Every Amazon finance team knows this ritual.</div>`,
+      placeholder: 'Enter the acronym', fragment: 'W' },
+    2: { icon: '🔐', title: 'The Encoded Message',
+      story: 'A coded message has been intercepted. Crack it to reveal who we serve.',
+      content: `<div class="cipher-text">19 · 5 · 12 · 12 · 5 · 18</div><div class="clue-box" style="margin-top:14px;">🔍 A=1, B=2, C=3 ... Z=26. Decode each number to a letter.</div>`,
+      placeholder: 'Enter the decoded word', fragment: 'S' },
+    3: { icon: '📊', title: 'Hero or Villain',
+      story: 'This concept can make you a hero or ruin your Monday.',
+      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I am the difference between what you planned and what actually happened. I can make you a hero or ruin your Monday. Who am I?"</em></div><div class="clue-box">🔍 Budget vs Actual. It can be favorable or unfavorable.</div>`,
+      placeholder: 'Enter the answer', fragment: 'V' },
+    4: { icon: '📅', title: 'Twice a Year',
+      story: 'Finance dreads me, leadership demands me.',
+      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I come twice a year. I'm not a holiday. Finance dreads me, leadership demands me. I get longer every cycle. What am I?"</em></div><div class="clue-box">🔍 Two letters. It has two cycles — one in the summer, one in the fall.</div>`,
+      placeholder: 'Enter the answer (2 letters)', fragment: '2' },
+    5: { icon: '🧮', title: 'Seller Math',
+      story: 'A seller\'s listings need analysis. Do the math.',
+      content: `<div style="font-family:'JetBrains Mono',monospace;font-size:1em;padding:14px;background:rgba(0,0,0,0.3);border-radius:10px;line-height:2;">📋 A seller lists <strong>200</strong> products<br>📌 <strong>25%</strong> are suppressed for compliance<br>📌 Of the remaining active listings, <strong>10%</strong> go out of stock<br><br><span style="color:#ffd700;">❓ How many listings are live and available?</span></div><div class="clue-box" style="margin-top:14px;">🔍 Step 1: Remove 25% of 200. Step 2: Remove 10% of what's left.</div>`,
+      placeholder: 'Enter the number', fragment: '1' },
+    6: { icon: '🔀', title: 'The Scramble',
+      story: 'Two of these scrambled words form a famous Leadership Principle. Three are decoys.',
+      content: `<div class="scramble-grid"><div class="scramble-word">MERTOCUTS</div><div class="scramble-word">SNOSIOBSE</div><div class="scramble-word">NOITAVONI</div><div class="scramble-word">TNVENI</div><div class="scramble-word">REVILED</div></div><div class="clue-box" style="margin-top:14px;">🔍 Unscramble all five. Two of them combine to form Amazon's #1 Leadership Principle.</div>`,
+      placeholder: 'Enter the Leadership Principle', fragment: 'C' },
+    7: { icon: '🚦', title: 'Green Red Yellow',
+      story: 'A lateral thinking challenge.',
+      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I am green when life is good, red when it isn't, and yellow when nobody wants to make a decision. I'm a three-letter acronym. What am I?"</em></div><div class="clue-box">🔍 Think dashboards and status indicators.</div>`,
+      placeholder: 'Enter the 3-letter acronym', fragment: 'K' },
+    8: { icon: '📋', title: 'The LP Order',
+      story: 'Put these Leadership Principles in the correct order as they appear on the official Amazon list.',
+      content: `<div style="display:flex;flex-direction:column;gap:8px;"><div class="order-item">🔹 Deliver Results</div><div class="order-item">🔹 Customer Obsession</div><div class="order-item">🔹 Are Right, A Lot</div><div class="order-item">🔹 Think Big</div></div><div class="clue-box" style="margin-top:14px;">🔍 Type them in order, separated by commas. Example: First, Second, Third, Fourth</div>`,
+      placeholder: 'Enter all four in order', fragment: '16' },
+    9: { icon: '🔓', title: 'Final Assembly',
+      story: 'You have all the fragments. Assemble the unlock code to submit the OP.',
+      content: `<div style="text-align:center;padding:20px;"><div style="font-size:1.3em;font-weight:700;margin-bottom:15px;color:#ffd700;">🔑 Your collected fragments:</div><div id="finalFragments" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;"></div><div style="color:rgba(255,255,255,0.5);font-size:0.9em;">Combine all fragments in order — no spaces, no dashes.<br>Enter the complete unlock code.</div></div>`,
+      placeholder: 'Enter the unlock code' }
   };
 
   const saved = sessionStorage.getItem('escapeRoom');
@@ -319,11 +231,16 @@
     document.getElementById('waitTeamName').textContent = team;
   }
 
-  socket.on('gameStarted', () => { currentPuzzle = 1; showScreen('puzzleScreen'); renderPuzzle(currentPuzzle); });
+  socket.on('gameStarted', () => { currentPuzzle = 1; collectedFragments = []; showScreen('puzzleScreen'); renderPuzzle(currentPuzzle); });
 
   socket.on('gameState', (data) => {
     if (data.started) {
       currentPuzzle = data.team.currentPuzzle;
+      // Rebuild collected fragments
+      collectedFragments = [];
+      for (let i = 1; i < currentPuzzle && i <= 8; i++) {
+        if (fragments[i]) collectedFragments.push(fragments[i]);
+      }
       if (data.team.finished) showScreen('victoryScreen');
       else { showScreen('puzzleScreen'); renderPuzzle(currentPuzzle); }
     }
@@ -333,6 +250,10 @@
     const input = document.getElementById('answerInput');
     if (data.correct) {
       input.classList.remove('wrong'); input.classList.add('correct');
+      // Collect fragment
+      if (fragments[data.puzzleNumber] && !collectedFragments.includes(fragments[data.puzzleNumber])) {
+        collectedFragments.push(fragments[data.puzzleNumber]);
+      }
       if (data.finished) {
         document.getElementById('victoryTime').textContent = fmtTime(data.finishTime);
         setTimeout(() => showScreen('victoryScreen'), 800);
@@ -348,21 +269,45 @@
     h.textContent = `💡 ${data.hint}`; h.classList.add('visible');
   });
 
-  socket.on('gameReset', () => { currentPuzzle = 1; teamName = ''; sessionStorage.removeItem('escapeRoom'); showScreen('joinScreen'); });
+  socket.on('gameReset', () => { currentPuzzle = 1; teamName = ''; collectedFragments = []; sessionStorage.removeItem('escapeRoom'); showScreen('joinScreen'); });
 
   function renderPuzzle(num) {
     const p = puzzles[num]; if (!p) return;
-    document.getElementById('puzzleNum').textContent = `PUZZLE ${num} / ${totalPuzzles}`;
+    document.getElementById('puzzleNum').textContent = `CLUE ${num} / ${totalPuzzles}`;
     const prog = document.getElementById('puzzleProgress'); prog.innerHTML = '';
     for (let i = 1; i <= totalPuzzles; i++) {
       const d = document.createElement('div'); d.className = 'prog-dot';
       if (i < num) d.classList.add('done'); else if (i === num) d.classList.add('active');
       prog.appendChild(d);
     }
+    // Update fragment bar
+    const fl = document.getElementById('fragmentList'); fl.innerHTML = '';
+    for (let i = 1; i <= 8; i++) {
+      const f = document.createElement('span');
+      if (collectedFragments.includes(fragments[i])) {
+        f.className = 'fragment-item'; f.textContent = fragments[i];
+      } else {
+        f.className = 'fragment-item empty'; f.textContent = '?';
+      }
+      fl.appendChild(f);
+    }
     document.getElementById('puzzleBody').innerHTML = `
       <div class="puzzle-title">${p.icon} ${p.title}</div>
       <div class="puzzle-story">${p.story}</div>
       <div class="puzzle-content">${p.content}</div>`;
+    // For clue 9, show collected fragments
+    if (num === 9) {
+      const ff = document.getElementById('finalFragments');
+      if (ff) {
+        ff.innerHTML = '';
+        collectedFragments.forEach(f => {
+          const el = document.createElement('span');
+          el.className = 'fragment-item'; el.textContent = f;
+          el.style.fontSize = '1.2em'; el.style.padding = '6px 14px';
+          ff.appendChild(el);
+        });
+      }
+    }
     const input = document.getElementById('answerInput');
     input.value = ''; input.placeholder = p.placeholder;
     input.classList.remove('wrong','correct');
