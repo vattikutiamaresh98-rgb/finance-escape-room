@@ -1,10 +1,11 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏦 Finance Escape Room — Host Screen</title>
+<title>🔒 Operation: Unlock the OP — Host Screen</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -221,7 +222,7 @@
 <div class="container">
   <div class="header">
     <div class="brand">
-      <h1>🏦 Finance Escape Room</h1>
+      <h1>🔒 Operation: Unlock the OP</h1>
       <div class="tag">SPS FP&A Edition</div>
     </div>
     <div class="timer-area" id="timerBar" style="display:none;">
@@ -231,13 +232,13 @@
 
   <div class="lobby" id="lobby">
     <div class="lobby-header">
-      <h2>Waiting for Players</h2>
+      <h2>Awaiting Agents</h2>
       <div class="counter">
         <b id="teamCount">0</b> teams · <b id="playerCount">0</b> players
       </div>
     </div>
     <div class="lobby-teams" id="lobbyTeams"></div>
-    <button class="start-btn" id="startBtn" disabled onclick="startGame()">Start Escape</button>
+    <button class="start-btn" id="startBtn" disabled onclick="startGame()">Launch Mission</button>
   </div>
 
   <div class="race-container" id="raceContainer">
@@ -311,7 +312,7 @@
     document.getElementById('playerCount').textContent = totalPlayers;
     document.getElementById('startBtn').disabled = teams.length < 2;
     // Update lobby header
-    document.querySelector('.lobby-header h2').textContent = teams.length > 0 ? 'Teams Ready' : 'Waiting for Players';
+    document.querySelector('.lobby-header h2').textContent = teams.length > 0 ? 'Agents Ready' : 'Awaiting Agents';
   }
 
   function updateRaceTrack(teams) {
@@ -351,7 +352,7 @@
         <div class="team-stats">
           ${team.finished
             ? `<div class="time">${fmt(team.finishTime)}</div>`
-            : `<div class="puzzle-status" style="color:${color}">Puzzle ${team.currentPuzzle}/${team.totalPuzzles}</div>`}
+            : `<div class="puzzle-status" style="color:${color}">Clue ${team.currentPuzzle}/${team.totalPuzzles}</div>`}
           <div class="hints">${team.hintsUsed > 0 ? `💡 ${team.hintsUsed} hints` : ''}</div>
         </div>`;
       container.appendChild(track);
@@ -378,7 +379,7 @@
   function resetGame() { if (confirm('Reset game? All progress will be lost.')) socket.emit('resetGame'); }
 
   function showWinner(name, time) {
-    document.getElementById('winnerName').textContent = `${name} ESCAPED!`;
+    document.getElementById('winnerName').textContent = `${name} — OP SUBMITTED!`;
     document.getElementById('winnerTime').textContent = `Escaped in ${fmt(time)}`;
     document.getElementById('winnerOverlay').classList.add('active');
     launchConfetti();
