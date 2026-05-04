@@ -167,42 +167,42 @@
   const socket = io();
   let currentPuzzle = 1, teamName = '', totalPuzzles = 9;
 
-  const fragments = { 1:'W', 2:'S', 3:'V', 4:'2', 5:'1', 6:'C', 7:'K', 8:'16' };
+  const fragments = { 1:'W', 2:'S', 3:'V', 4:'2', 5:'1', 6:'C', 7:'K', 8:'14' };
   let collectedFragments = [];
 
   const puzzles = {
     1: { icon: '🧠', title: 'The Weekly Ritual',
       story: 'The system is waking up. Answer this to begin decryption.',
-      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"Every week I carry the story of the business. Leaders read me in silence before they speak. No presenter required. What am I?"</em></div><div class="clue-box">🔍 Three letters. Every Amazon finance team knows this ritual.</div>`,
+      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"Every week I carry the story of the business. Leaders read me in silence before they speak. No presenter required. What am I?"</em></div>`,
       placeholder: 'Enter the acronym', fragment: 'W' },
     2: { icon: '🔐', title: 'The Encoded Message',
       story: 'A coded message has been intercepted. Crack it to reveal who we serve.',
-      content: `<div class="cipher-text">19 · 5 · 12 · 12 · 5 · 18</div><div class="clue-box" style="margin-top:14px;">🔍 A=1, B=2, C=3 ... Z=26. Decode each number to a letter.</div>`,
+      content: `<div class="cipher-text">19 · 5 · 12 · 12 · 5 · 18</div>`,
       placeholder: 'Enter the decoded word', fragment: 'S' },
     3: { icon: '📊', title: 'Hero or Villain',
       story: 'This concept can make you a hero or ruin your Monday.',
-      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I am the difference between what you planned and what actually happened. I can make you a hero or ruin your Monday. Who am I?"</em></div><div class="clue-box">🔍 Budget vs Actual. It can be favorable or unfavorable.</div>`,
+      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I am the difference between what you planned and what actually happened. I can make you a hero or ruin your Monday. Who am I?"</em></div>`,
       placeholder: 'Enter the answer', fragment: 'V' },
     4: { icon: '📅', title: 'Twice a Year',
       story: 'Finance dreads me, leadership demands me.',
-      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I come twice a year. I'm not a holiday. Finance dreads me, leadership demands me. I get longer every cycle. What am I?"</em></div><div class="clue-box">🔍 Two letters. It has two cycles — one in the summer, one in the fall.</div>`,
+      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I come twice a year. I'm not a holiday. Finance dreads me, leadership demands me. I get longer every cycle. What am I?"</em></div>`,
       placeholder: 'Enter the answer (2 letters)', fragment: '2' },
     5: { icon: '🧮', title: 'Seller Math',
       story: 'A seller\'s listings need analysis. Do the math.',
-      content: `<div style="font-family:'JetBrains Mono',monospace;font-size:1em;padding:14px;background:rgba(0,0,0,0.3);border-radius:10px;line-height:2;">📋 A seller lists <strong>200</strong> products<br>📌 <strong>25%</strong> are suppressed for compliance<br>📌 Of the remaining active listings, <strong>10%</strong> go out of stock<br><br><span style="color:#ffd700;">❓ How many listings are live and available?</span></div><div class="clue-box" style="margin-top:14px;">🔍 Step 1: Remove 25% of 200. Step 2: Remove 10% of what's left.</div>`,
+      content: `<div style="font-family:'JetBrains Mono',monospace;font-size:1em;padding:14px;background:rgba(0,0,0,0.3);border-radius:10px;line-height:2;">📋 A seller lists <strong>200</strong> products<br>📌 <strong>25%</strong> are suppressed for compliance<br>📌 Of the remaining active listings, <strong>10%</strong> go out of stock<br><br><span style="color:#ffd700;">❓ How many listings are live and available?</span></div>`,
       placeholder: 'Enter the number', fragment: '1' },
     6: { icon: '🔀', title: 'The Scramble',
       story: 'Two of these scrambled words form a famous Leadership Principle. Three are decoys.',
-      content: `<div class="scramble-grid"><div class="scramble-word">MERTOCUTS</div><div class="scramble-word">SNOSIOBSE</div><div class="scramble-word">NOITAVONI</div><div class="scramble-word">TNVENI</div><div class="scramble-word">REVILED</div></div><div class="clue-box" style="margin-top:14px;">🔍 Unscramble all five. Two of them combine to form Amazon's #1 Leadership Principle.</div>`,
+      content: `<div class="scramble-grid"><div class="scramble-word">NOITAVONI</div><div class="scramble-word">SNOSIOBSE</div><div class="scramble-word">REVILED</div><div class="scramble-word">MERTOCUTS</div><div class="scramble-word">TNVENI</div></div>`,
       placeholder: 'Enter the Leadership Principle', fragment: 'C' },
     7: { icon: '🚦', title: 'Green Red Yellow',
       story: 'A lateral thinking challenge.',
-      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I am green when life is good, red when it isn't, and yellow when nobody wants to make a decision. I'm a three-letter acronym. What am I?"</em></div><div class="clue-box">🔍 Think dashboards and status indicators.</div>`,
+      content: `<div style="font-size:1.05em;line-height:1.8;color:rgba(255,255,255,0.7);padding:10px;"><em>"I am green when life is good, red when it isn't, and yellow when nobody wants to make a decision. I'm a three-letter acronym. What am I?"</em></div>`,
       placeholder: 'Enter the 3-letter acronym', fragment: 'K' },
     8: { icon: '📋', title: 'The LP Order',
       story: 'Put these Leadership Principles in the correct order as they appear on the official Amazon list.',
-      content: `<div style="display:flex;flex-direction:column;gap:8px;"><div class="order-item">🔹 Deliver Results</div><div class="order-item">🔹 Customer Obsession</div><div class="order-item">🔹 Are Right, A Lot</div><div class="order-item">🔹 Think Big</div></div><div class="clue-box" style="margin-top:14px;">🔍 Type them in order, separated by commas. Example: First, Second, Third, Fourth</div>`,
-      placeholder: 'Enter all four in order', fragment: '16' },
+      content: `<div style="display:flex;flex-direction:column;gap:8px;"><div class="order-item">🔹 Deliver Results</div><div class="order-item">🔹 Customer Obsession</div><div class="order-item">🔹 Are Right, A Lot</div><div class="order-item">🔹 Think Big</div></div>`,
+      placeholder: 'Enter all four in order', fragment: '14' },
     9: { icon: '🔓', title: 'Final Assembly',
       story: 'You have all the fragments. Assemble the unlock code to submit the OP.',
       content: `<div style="text-align:center;padding:20px;"><div style="font-size:1.3em;font-weight:700;margin-bottom:15px;color:#ffd700;">🔑 Your collected fragments:</div><div id="finalFragments" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;"></div><div style="color:rgba(255,255,255,0.5);font-size:0.9em;">Combine all fragments in order — no spaces, no dashes.<br>Enter the complete unlock code.</div></div>`,
@@ -253,7 +253,7 @@
     5: 'Correct. First digit of the answer. Fragment collected: 1',
     6: 'Customer Obsession is LP #1. Fragment collected: C',
     7: 'First letter of the answer. Fragment collected: K',
-    8: 'Deliver Results sits at position 16. Fragment collected: 16',
+    8: 'Deliver Results sits at position 14. Fragment collected: 14',
     9: 'Code accepted. The OP is submitted!'
   };
 
