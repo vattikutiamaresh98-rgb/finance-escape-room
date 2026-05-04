@@ -1,4 +1,6 @@
 
+Purpose: Print server.js
+
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -128,7 +130,11 @@ io.on('connection', (socket) => {
     
     const correctAnswer = puzzleAnswers[puzzleNumber];
     const normalize = s => s.toString().toLowerCase().trim().replace(/\s*,\s*/g, ',').replace(/\s+/g, ' ');
-    const isCorrect = normalize(answer) === normalize(correctAnswer);
+    // For clue 8, also accept "are right, a lot" with the comma
+    let isCorrect = normalize(answer) === normalize(correctAnswer);
+    if (!isCorrect && puzzleNumber === 8) {
+      isCorrect = normalize(answer.replace(/are right,\s*a lot/i, 'are right a lot')) === normalize(correctAnswer);
+    }
 
     if (isCorrect) {
       team.solvedPuzzles.push(puzzleNumber);
