@@ -1,3 +1,4 @@
+
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -37,8 +38,8 @@ const puzzleAnswers = {
   5: '135',
   6: 'customer obsession',
   7: 'kpi',
-  8: 'customer obsession, think big, are right a lot, deliver results',
-  9: 'wsv21ck16'
+  8: 'customer obsession, are right a lot, think big, deliver results',
+  9: 'wsv21ck14'
 };
 
 // Puzzle hints
@@ -50,8 +51,8 @@ const puzzleHints = {
   5: 'Step 1: remove 25% of 200. Step 2: remove 10% of what\'s left.',
   6: 'Unscramble the words first. Two of them form LP #1.',
   7: 'Think dashboards and status indicators. Three letters.',
-  8: 'Customer Obsession is #1. Think Big is before Are Right, A Lot. Deliver Results is last.',
-  9: 'Combine all fragments in order: W, S, V, 2, 1, C, K, 16'
+  8: 'Customer Obsession is #1. Are Right, A Lot is #4. Think Big is #8. Deliver Results is #14.',
+  9: 'Combine all fragments in order: W, S, V, 2, 1, C, K, 14'
 };
 
 io.on('connection', (socket) => {
